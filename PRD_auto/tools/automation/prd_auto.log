@@ -1,0 +1,50 @@
+[2025-11-19 15:29:33] [init] Initialized state with 3 chunks.
+[2025-11-19 15:29:38] [status] Chunk status summary (run mode):
+[2025-11-19 15:29:38] [status] Total chunks: 3
+[2025-11-19 15:29:38] [status] pending: 3
+[2025-11-19 15:29:38] [status] 
+[2025-11-19 15:29:38] [status] ID    Section                                  Lines           Status       Attempts  Result          Updated             
+[2025-11-19 15:29:38] [status] ------------------------------------------------------------------------------------------------------------------------
+[2025-11-19 15:29:38] [status] 1     Sample Productivity Companion – Produc   1-100           pending      0         -               -                   
+[2025-11-19 15:29:38] [status] 2     4.1.2 Feature A2 – Habit Nudges          101-200         pending      0         -               -                   
+[2025-11-19 15:29:38] [status] 3     9.2 Feature-Specific Prompts             201-244         pending      0         -               -                   
+[2025-11-19 15:29:45] [run] DRY-RUN mode: No actual Cursor calls will be made
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=prepare_prompt] Processing chunk 1 (lines 1-100, section="Sample Productivity Companion – Product Requirements Document")
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=send_prompt] Sending chunk 1 to Cursor
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=send_prompt] DRY-RUN: Would invoke Cursor driver for chunk 1
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=send_prompt] DRY-RUN: Prompt length: 7334 chars
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=wait] DRY-RUN: Would wait 2 seconds
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=save_transcript] DRY-RUN: Would save transcript to /Users/pedram/NeuraLogy-AI-/PRD_auto/tools/automation/output_chunk_1.txt
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=update_state] DRY-RUN: Chunk 1 marked as skipped_dry_run
+[2025-11-19 15:29:45] [run] [chunk=1] [phase=update_state] Chunk 1 completed
+[2025-11-19 15:29:45] [run] Reached limit of 1 chunks. Stopping.
+[2025-11-19 15:29:51] [enhance] Initialized enhancement state with 3 chunks.
+[2025-11-19 15:29:51] [enhance] DRY-RUN mode: No actual Cursor calls will be made
+[2025-11-19 15:29:51] [enhance] [chunk=1] [phase=prepare_prompt] Enhancing chunk 1 (lines 1-100, section="Sample Productivity Companion – Product Requirements Document")
+[2025-11-19 15:29:51] [enhance] [chunk=1] [phase=send_prompt] Sending enhancement prompt for chunk 1 to Cursor
+[2025-11-19 15:29:51] [run] [chunk=1] [phase=send_prompt] DRY-RUN: Would invoke Cursor driver for chunk 1
+[2025-11-19 15:29:51] [run] [chunk=1] [phase=send_prompt] DRY-RUN: Prompt length: 7762 chars
+[2025-11-19 15:29:51] [run] [chunk=1] [phase=wait] DRY-RUN: Would wait 2 seconds
+[2025-11-19 15:29:51] [run] [chunk=1] [phase=save_transcript] DRY-RUN: Would save transcript to /Users/pedram/NeuraLogy-AI-/PRD_auto/tools/automation/enhanced_chunk_1.txt
+[2025-11-19 15:29:51] [enhance] [chunk=1] [phase=update_state] DRY-RUN: Chunk 1 marked as skipped_dry_run
+[2025-11-19 15:29:51] [enhance] [chunk=1] [phase=update_state] Chunk 1 enhancement completed
+[2025-11-19 15:29:51] [enhance] Reached limit of 1 chunks. Stopping.
+[2025-11-19 15:29:51] [enhance] Not all chunks are done. Skipping final output assembly.
+[2025-11-19 15:29:59] [status] Chunk status summary (run mode):
+[2025-11-19 15:29:59] [status] Total chunks: 3
+[2025-11-19 15:29:59] [status] pending: 2, skipped_dry_run: 1
+[2025-11-19 15:29:59] [status] 
+[2025-11-19 15:29:59] [status] ID    Section                                  Lines           Status       Attempts  Result          Updated             
+[2025-11-19 15:29:59] [status] ------------------------------------------------------------------------------------------------------------------------
+[2025-11-19 15:29:59] [status] 1     Sample Productivity Companion – Produc   1-100           skipped_dry_run 1         dry_run         2025-11-19 12:29:45 
+[2025-11-19 15:29:59] [status] 2     4.1.2 Feature A2 – Habit Nudges          101-200         pending      0         -               -                   
+[2025-11-19 15:29:59] [status] 3     9.2 Feature-Specific Prompts             201-244         pending      0         -               -                   
+[2025-11-19 15:30:04] [status] Chunk status summary (enhance mode):
+[2025-11-19 15:30:04] [status] Total chunks: 3
+[2025-11-19 15:30:04] [status] pending: 2, skipped_dry_run: 1
+[2025-11-19 15:30:04] [status] 
+[2025-11-19 15:30:04] [status] ID    Section                                  Lines           Status       Attempts  Result          Updated             
+[2025-11-19 15:30:04] [status] ------------------------------------------------------------------------------------------------------------------------
+[2025-11-19 15:30:04] [status] 1     Sample Productivity Companion – Produc   1-100           skipped_dry_run 1         dry_run         2025-11-19 12:29:51 
+[2025-11-19 15:30:04] [status] 2     4.1.2 Feature A2 – Habit Nudges          101-200         pending      0         -               -                   
+[2025-11-19 15:30:04] [status] 3     9.2 Feature-Specific Prompts             201-244         pending      0         -               -                   

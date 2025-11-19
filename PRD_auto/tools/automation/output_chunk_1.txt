@@ -1,0 +1,4 @@
+[DRY-RUN] Mock transcript for chunk 1
+
+Project Overview:
+# Sample Productivity Companion – Product Requirements Document > This is a demonstrative “single-source-of-truth” PRD that merges product requirements, prompt definitions, and autom...
