@@ -328,6 +328,268 @@
       "enforce_tls_version": "1.2+",
       "certificate_validation": "required"
     }
+  },
+  "performance": {
+    "enabled": true,
+    "ai_usage": {
+      "max_tokens_per_call": 8000,
+      "max_calls_per_run": 200,
+      "soft_budget_tokens_per_day": 500000,
+      "enforce_limits": false,
+      "track_usage": true
+    },
+    "chunking_tuning": {
+      "min_chunk_lines": 50,
+      "max_chunk_lines": 400,
+      "adaptive_chunking": true,
+      "target_latency_seconds_per_chunk": 30,
+      "prefer_larger_chunks": false
+    },
+    "growth_tuning": {
+      "max_passes_per_run": 3,
+      "max_chunks_per_pass": 10,
+      "min_growth_ratio": 0.95,
+      "max_growth_ratio": 1.5,
+      "stop_if_slow": true,
+      "slow_threshold_seconds_per_chunk": 60
+    },
+    "impl_tuning": {
+      "max_files_per_impl_phase": 5,
+      "max_impl_tasks_per_run": 10,
+      "avoid_touching_large_files_over_kb": 200,
+      "prefer_small_batches": true
+    },
+    "build_runtime": {
+      "build_timeout_seconds": 900,
+      "test_timeout_seconds": 600,
+      "monitor_build_time": true,
+      "warn_if_build_slow": true,
+      "slow_build_threshold_seconds": 300
+    },
+    "cost_notes": {
+      "track_ai_usage": true,
+      "estimate_costs": false,
+      "cost_per_1k_tokens_usd": null,
+      "log_cost_estimates": false
+    }
+  },
+  "analytics": {
+    "enabled": true,
+    "events": {
+      "schema_version": 1,
+      "core_events": [
+        "app_open",
+        "sign_up",
+        "login",
+        "logout",
+        "feature_used",
+        "purchase",
+        "error",
+        "feedback_submitted"
+      ],
+      "allow_custom_events": true,
+      "require_event_documentation": true
+    },
+    "kpis": {
+      "primary": [
+        "daily_active_users",
+        "weekly_active_users",
+        "retention_d7",
+        "conversion_rate"
+      ],
+      "secondary": [
+        "feature_adoption_rate",
+        "session_length",
+        "error_rate"
+      ],
+      "custom": []
+    },
+    "experiments": {
+      "enabled": true,
+      "framework": "generic",
+      "max_concurrent_experiments": 5,
+      "require_hypothesis": true,
+      "min_sample_size": 100
+    },
+    "feedback": {
+      "enabled": true,
+      "channels": [
+        "in_app_feedback",
+        "app_store_reviews",
+        "email_support",
+        "community_forum"
+      ],
+      "auto_summarize_feedback": true,
+      "feedback_review_frequency": "weekly"
+    },
+    "storage": {
+      "event_store_type": "unspecified",
+      "retention_days": 365,
+      "anonymize_pii": true
+    },
+    "privacy": {
+      "respect_opt_out": true,
+      "minimal_data_collection": true,
+      "compliance_aware": true
+    }
+  },
+  "extensions": {
+    "enabled": true,
+    "allow_custom_scripts": true,
+    "document_custom_scripts_in_prd": true,
+    "extension_directories": [
+      "tools",
+      "scripts"
+    ],
+    "known_extensions": [],
+    "ai_tools": {
+      "allow_agent_specific_profiles": true,
+      "allow_external_orchestrators": true,
+      "allow_custom_meta_prompts": true
+    },
+    "versioning": {
+      "extension_versioning_scheme": "project_specific",
+      "require_extension_documentation": true
+    }
+  },
+  "ai": {
+    "enabled": true,
+    "default_provider": "cursor",
+    "default_model": "auto",
+    "providers": {
+      "cursor": {
+        "type": "ide_assistant",
+        "description": "Local IDE agent (Cursor) used for code + PRD tasks",
+        "supports_prd_growth": true,
+        "supports_code_generation": true,
+        "supports_evaluation": true,
+        "supports_refactoring": true,
+        "supports_background": false,
+        "requires_ide": true,
+        "cost_model": "included_in_ide"
+      },
+      "openai": {
+        "type": "api",
+        "description": "Remote LLM provider (OpenAI-compatible API)",
+        "supports_prd_growth": true,
+        "supports_code_generation": true,
+        "supports_evaluation": true,
+        "supports_refactoring": true,
+        "supports_background": true,
+        "requires_ide": false,
+        "cost_model": "per_token",
+        "api_base_url": null,
+        "model_preferences": {
+          "prd_growth": "gpt-4",
+          "code_generation": "gpt-4",
+          "evaluation": "gpt-4",
+          "refactoring": "gpt-3.5-turbo"
+        }
+      },
+      "anthropic": {
+        "type": "api",
+        "description": "Remote LLM provider (Anthropic Claude API)",
+        "supports_prd_growth": true,
+        "supports_code_generation": true,
+        "supports_evaluation": true,
+        "supports_refactoring": true,
+        "supports_background": true,
+        "requires_ide": false,
+        "cost_model": "per_token",
+        "api_base_url": null,
+        "model_preferences": {
+          "prd_growth": "claude-3-opus",
+          "code_generation": "claude-3-sonnet",
+          "evaluation": "claude-3-opus",
+          "refactoring": "claude-3-sonnet"
+        }
+      },
+      "local_llm": {
+        "type": "local",
+        "description": "Local model for offline or privacy-sensitive use",
+        "supports_prd_growth": true,
+        "supports_code_generation": false,
+        "supports_evaluation": false,
+        "supports_refactoring": true,
+        "supports_background": false,
+        "requires_ide": false,
+        "cost_model": "free",
+        "model_path": null,
+        "api_endpoint": null
+      },
+      "google_agent": {
+        "type": "ide_assistant",
+        "description": "Google AI agent (antigravity) for IDE integration",
+        "supports_prd_growth": true,
+        "supports_code_generation": true,
+        "supports_evaluation": true,
+        "supports_refactoring": true,
+        "supports_background": false,
+        "requires_ide": true,
+        "cost_model": "included_in_ide"
+      },
+      "none": {
+        "type": "stub",
+        "description": "No AI provider - all operations run in stub mode",
+        "supports_prd_growth": false,
+        "supports_code_generation": false,
+        "supports_evaluation": false,
+        "supports_refactoring": false,
+        "supports_background": false,
+        "requires_ide": false,
+        "cost_model": "free"
+      }
+    },
+    "task_routing": {
+      "prd_growth": {
+        "preferred_provider": "cursor",
+        "fallback_providers": ["openai", "anthropic", "local_llm"],
+        "model_preference": "auto"
+      },
+      "code_generation": {
+        "preferred_provider": "cursor",
+        "fallback_providers": ["openai", "anthropic"],
+        "model_preference": "auto"
+      },
+      "evaluation": {
+        "preferred_provider": "openai",
+        "fallback_providers": ["anthropic", "cursor", "local_llm"],
+        "model_preference": "auto"
+      },
+      "refactoring": {
+        "preferred_provider": "cursor",
+        "fallback_providers": ["openai", "anthropic", "local_llm"],
+        "model_preference": "auto"
+      },
+      "documentation": {
+        "preferred_provider": "cursor",
+        "fallback_providers": ["local_llm", "openai"],
+        "model_preference": "auto"
+      }
+    },
+    "execution_modes": {
+      "allow_ide_only": true,
+      "allow_api_calls": false,
+      "allow_local_models": false,
+      "require_human_approval_for_api": true,
+      "prefer_offline": false
+    },
+    "fallback_strategy": {
+      "on_provider_unavailable": "try_fallback",
+      "on_all_providers_unavailable": "stub_mode",
+      "stub_mode_behavior": "log_and_continue"
+    }
+  },
+  "sandbox": {
+    "enabled": false,
+    "notes": "Optional playground for experimental behaviors.",
+    "allow_experimental_commands": false,
+    "experimental_flags": {
+      "alt_chunking": false,
+      "aggressive_growth": false,
+      "auto_git_experiments": false,
+      "custom_ai_routing": false
+    }
   }
 }
 

@@ -38,6 +38,14 @@ import os
 
 
 # ============================================================================
+# TEMPLATE VERSION
+# ============================================================================
+
+# Template version - update when making template-wide changes
+TEMPLATE_VERSION = "1.0.0"
+
+
+# ============================================================================
 # CONFIGURATION
 # ============================================================================
 
@@ -372,7 +380,7 @@ def load_config(config_path: pathlib.Path = None) -> Config:
     
     # Create Config object
     # Filter out sections that are not part of Config dataclass
-    excluded_keys = ["growth", "git", "safety", "implementation", "profiles", "domain_packs", "deployment", "security"]
+    excluded_keys = ["growth", "git", "safety", "implementation", "profiles", "domain_packs", "deployment", "security", "performance", "analytics", "extensions", "ai", "sandbox"]
     config_dict = {k: v for k, v in data.items() if k not in excluded_keys}
     config_dict["growth"] = growth_config
     config_dict["git"] = git_config
@@ -3574,14 +3582,24 @@ def command_enhance(
     return 0 if pass_stats["chunks_failed"] == 0 else 1
 
 
-def command_grow(config: Config) -> int:
+def command_grow(config: Config, dry_run: bool = False) -> int:
     """
     Run autonomous growth loop to expand prd.md towards target line count.
     
     This command runs multiple enhancement passes, rebuilding state as needed,
     until reaching the target line count or other stop conditions.
+    
+    Args:
+        config: Config object
+        dry_run: If True, log operations without making changes
     """
-    log("Running 'grow' command", {"command": "grow", "step": "start"}, config)
+    log(f"Running 'grow' command: dry_run={dry_run}", {"command": "grow", "dry_run": dry_run, "step": "start"}, config)
+    
+    if dry_run:
+        log("[DRY_RUN] grow would have run multiple enhancement passes to expand prd.md",
+            {"command": "grow", "dry_run": True}, config)
+        print("[DRY_RUN] grow command would expand PRD, but dry-run mode is enabled. No changes made.")
+        return 0
     
     # Load state
     state = load_state(config)
@@ -3957,14 +3975,24 @@ def command_sync_roles(config: Config) -> int:
         return 0
 
 
-def command_plan_impl(config: Config) -> int:
+def command_plan_impl(config: Config, dry_run: bool = False) -> int:
     """
     Generate implementation plan from PRD.
     
     Reads PRD, identifies phases and tasks, and generates a structured
     implementation plan that maps phases to code modules and files.
+    
+    Args:
+        config: Config object
+        dry_run: If True, log operations without making changes
     """
-    log("Running 'plan_impl' command", {"command": "plan_impl", "step": "start"}, config)
+    log(f"Running 'plan_impl' command: dry_run={dry_run}", {"command": "plan_impl", "dry_run": dry_run, "step": "start"}, config)
+    
+    if dry_run:
+        log("[DRY_RUN] plan_impl would have generated implementation plan from PRD",
+            {"command": "plan_impl", "dry_run": True}, config)
+        print("[DRY_RUN] plan_impl command would generate implementation plan, but dry-run mode is enabled. No changes made.")
+        return 0
     
     if not config.implementation.enabled:
         log(
@@ -4447,15 +4475,25 @@ def command_git_status(config: Config) -> int:
     return 0
 
 
-def command_git_sync(config: Config) -> int:
+def command_git_sync(config: Config, dry_run: bool = False) -> int:
     """
     Manually trigger git sync (add, commit, push).
     
     NOTE: This command respects git.enable_auto for safety.
     If enable_auto is false, the command will log and skip operations.
     To enable automatic git operations, set git.enable_auto=true in auto_config.json.
+    
+    Args:
+        config: Config object
+        dry_run: If True, log operations without making changes
     """
-    log("Running 'git_sync' command", {"command": "git_sync", "step": "start"}, config)
+    log(f"Running 'git_sync' command: dry_run={dry_run}", {"command": "git_sync", "dry_run": dry_run, "step": "start"}, config)
+    
+    if dry_run:
+        log("[DRY_RUN] git_sync would have added, committed, and pushed changes",
+            {"command": "git_sync", "dry_run": True}, config)
+        print("[DRY_RUN] git_sync command would sync changes to git, but dry-run mode is enabled. No changes made.")
+        return 0
     
     # Note: We respect enable_auto even for manual git_sync command for safety
     # This prevents accidental commits when the user hasn't explicitly enabled automation
@@ -4598,6 +4636,200 @@ def command_security_check(config: Config, dry_run: bool = False, verbose: bool 
     return 0
 
 
+def command_perf_status(config: Config, verbose: bool = False) -> int:
+    """
+    Show performance configuration and usage status.
+    
+    Args:
+        config: Config object
+        verbose: If True, include usage analysis from logs
+    """
+    log(f"Running 'perf_status' command: verbose={verbose}", {"command": "perf_status", "step": "start"}, config)
+    
+    # Check if performance is enabled
+    if not config._raw_data or "performance" not in config._raw_data or not config._raw_data.get("performance", {}).get("enabled", False):
+        print("WARNING: Performance features are disabled. Set performance.enabled=true in auto_config.json")
+        return 0
+    
+    # TODO: Implement full perf_status logic:
+    # 1. Load performance config
+    # 2. Summarize configuration
+    # 3. Analyze logs if verbose
+    # 4. Calculate usage statistics
+    # 5. Report budget status
+    # 6. Generate recommendations
+    
+    print("perf_status is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would show: AI usage budgets, chunking/growth tuning, usage statistics, budget status")
+    return 0
+
+
+def command_perf_suggest(config: Config, apply: bool = False) -> int:
+    """
+    Suggest performance tuning optimizations.
+    
+    Args:
+        config: Config object
+        apply: If True, apply suggestions (requires explicit flag)
+    """
+    log(f"Running 'perf_suggest' command: apply={apply}", {"command": "perf_suggest", "step": "start"}, config)
+    
+    # Check if performance is enabled
+    if not config._raw_data or "performance" not in config._raw_data or not config._raw_data.get("performance", {}).get("enabled", False):
+        print("WARNING: Performance features are disabled.")
+        return 0
+    
+    # TODO: Implement full perf_suggest logic:
+    # 1. Analyze current config
+    # 2. Analyze logs for patterns
+    # 3. Generate heuristic-based suggestions
+    # 4. Show suggestions with reasoning
+    # 5. Apply if --apply flag and safe
+    
+    print("perf_suggest is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would suggest: chunk size adjustments, pass limits, token budgets, etc.")
+    if apply:
+        print("--apply flag would apply suggestions (not yet implemented)")
+    return 0
+
+
+def command_analytics_status(config: Config, verbose: bool = False) -> int:
+    """
+    Show analytics configuration and documentation status.
+    
+    Args:
+        config: Config object
+        verbose: If True, analyze PRD for documentation completeness
+    """
+    log(f"Running 'analytics_status' command: verbose={verbose}", {"command": "analytics_status", "step": "start"}, config)
+    
+    # Check if analytics is enabled
+    if not config._raw_data or "analytics" not in config._raw_data or not config._raw_data.get("analytics", {}).get("enabled", False):
+        print("WARNING: Analytics features are disabled. Set analytics.enabled=true in auto_config.json")
+        return 0
+    
+    # TODO: Implement full analytics_status logic:
+    # 1. Load analytics config
+    # 2. Summarize configuration (events, KPIs, experiments, feedback)
+    # 3. If verbose: Scan prd.md for Analytics section
+    # 4. Check documentation completeness
+    # 5. Report missing pieces
+    
+    print("analytics_status is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would show: analytics config, KPIs, events, experiments, feedback channels, PRD documentation status")
+    return 0
+
+
+def command_analytics_summarize(config: Config, since_days: int = 7) -> int:
+    """
+    Summarize recent analytics activity and patterns.
+    
+    Args:
+        config: Config object
+        since_days: Number of days to look back
+    """
+    log(f"Running 'analytics_summarize' command: since_days={since_days}", {"command": "analytics_summarize", "step": "start"}, config)
+    
+    # Check if analytics is enabled
+    if not config._raw_data or "analytics" not in config._raw_data or not config._raw_data.get("analytics", {}).get("enabled", False):
+        print("WARNING: Analytics features are disabled.")
+        return 0
+    
+    # TODO: Implement full analytics_summarize logic:
+    # 1. Read auto_master.log for recent runs
+    # 2. Parse for analytics-related patterns
+    # 3. Extract error patterns
+    # 4. Calculate statistics
+    # 5. Generate summary
+    
+    print("analytics_summarize is not fully implemented yet, but stub is reachable and safe.")
+    print(f"This command would summarize: recent automation activity, error patterns, performance trends (last {since_days} days)")
+    return 0
+
+
+def command_feedback_summarize(config: Config, channel: typing.Optional[str] = None) -> int:
+    """
+    Summarize user feedback from configured channels.
+    
+    Args:
+        config: Config object
+        channel: Optional specific channel to summarize
+    """
+    log(f"Running 'feedback_summarize' command: channel={channel}", {"command": "feedback_summarize", "step": "start"}, config)
+    
+    # Check if analytics/feedback is enabled
+    if not config._raw_data or "analytics" not in config._raw_data:
+        print("WARNING: Analytics features are disabled.")
+        return 0
+    
+    feedback_config = config._raw_data.get("analytics", {}).get("feedback", {})
+    if not feedback_config.get("enabled", False):
+        print("WARNING: Feedback features are disabled.")
+        return 0
+    
+    # TODO: Implement full feedback_summarize logic:
+    # 1. Aggregate feedback from configured channels
+    # 2. Categorize by theme
+    # 3. Generate summary using Feedback Intake Template
+    # 4. Suggest actionable items
+    
+    print("feedback_summarize is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would summarize: feedback themes, top requests, critical issues, actionable items")
+    print("For now, review feedback manually and use Feedback Intake Template in prd.md Section 19.3")
+    return 0
+
+
+def command_extensions_status(config: Config, verbose: bool = False) -> int:
+    """
+    Show extensions configuration and status.
+    
+    Args:
+        config: Config object
+        verbose: If True, scan extension directories for unregistered extensions
+    """
+    log(f"Running 'extensions_status' command: verbose={verbose}", {"command": "extensions_status", "step": "start"}, config)
+    
+    # Check if extensions are enabled
+    if not config._raw_data or "extensions" not in config._raw_data or not config._raw_data.get("extensions", {}).get("enabled", False):
+        print("WARNING: Extensions features are disabled. Set extensions.enabled=true in auto_config.json")
+        return 0
+    
+    # TODO: Implement full extensions_status logic:
+    # 1. Load extensions config
+    # 2. List known_extensions with status (exists/missing)
+    # 3. If verbose: Scan extension directories for unregistered extensions
+    # 4. Generate status report
+    
+    print("extensions_status is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would show: registered extensions, extension status, unregistered extensions (if verbose)")
+    return 0
+
+
+def command_extensions_doctor(config: Config) -> int:
+    """
+    Check extensions for issues (missing files, undocumented extensions, etc.).
+    
+    Args:
+        config: Config object
+    """
+    log("Running 'extensions_doctor' command", {"command": "extensions_doctor", "step": "start"}, config)
+    
+    # Check if extensions are enabled
+    if not config._raw_data or "extensions" not in config._raw_data or not config._raw_data.get("extensions", {}).get("enabled", False):
+        print("WARNING: Extensions features are disabled.")
+        return 0
+    
+    # TODO: Implement full extensions_doctor logic:
+    # 1. Check registered extensions (file exists, executable, in allowed dir)
+    # 2. Check unregistered extensions in extension directories
+    # 3. Check documentation in PRD
+    # 4. Generate report with recommendations
+    
+    print("extensions_doctor is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would check: missing extension files, unregistered extensions, missing documentation")
+    return 0
+
+
 def command_quick_test(config: Config, scope: str = "basic", verbose: bool = False) -> int:
     """
     Run quick test suite.
@@ -4624,6 +4856,830 @@ def command_quick_test(config: Config, scope: str = "basic", verbose: bool = Fal
 
 
 # ============================================================================
+# AI ABSTRACTION LAYER
+# ============================================================================
+
+def run_ai_task(task_type: str, prompt: str, config: Config, context: typing.Optional[dict] = None) -> str:
+    """
+    Generic AI entrypoint for this automation.
+    
+    This function provides a unified interface for all AI operations, routing
+    tasks to appropriate providers based on configuration.
+    
+    Args:
+        task_type: Task type identifier (e.g., "prd_growth", "code_generation", 
+                   "evaluation", "refactoring", "documentation")
+        prompt: The text/prompt to send to the AI
+        config: Config object with "ai" section
+        context: Optional context dict (e.g., chunk info, phase info)
+    
+    Returns:
+        str: AI response text, or empty string if stub mode
+    
+    Behavior:
+        - Reads config["ai"] to determine provider routing
+        - Checks execution_modes to see what's allowed
+        - Tries preferred provider, falls back to fallback providers
+        - Logs all operations
+        - Returns stub response if no providers available
+    """
+    log(f"run_ai_task called: task_type={task_type}", {"task_type": task_type, "step": "start"}, config)
+    
+    # Check if AI is enabled
+    ai_config = config._raw_data.get("ai", {}) if config._raw_data else {}
+    if not ai_config.get("enabled", True):
+        log("AI is disabled in config, using stub mode", {"task_type": task_type}, config)
+        return ""
+    
+    # Get task routing
+    task_routing = ai_config.get("task_routing", {})
+    task_config = task_routing.get(task_type, {})
+    preferred_provider = task_config.get("preferred_provider") or ai_config.get("default_provider", "none")
+    fallback_providers = task_config.get("fallback_providers", [])
+    
+    # Get execution modes
+    execution_modes = ai_config.get("execution_modes", {})
+    allow_ide_only = execution_modes.get("allow_ide_only", True)
+    allow_api_calls = execution_modes.get("allow_api_calls", False)
+    allow_local_models = execution_modes.get("allow_local_models", False)
+    
+    # Build provider list (preferred + fallbacks)
+    providers_to_try = [preferred_provider] + fallback_providers
+    
+    # Try each provider in order
+    for provider_name in providers_to_try:
+        if provider_name == "none":
+            continue
+            
+        # Get provider config
+        providers = ai_config.get("providers", {})
+        provider_config = providers.get(provider_name, {})
+        
+        if not provider_config:
+            log(f"Provider {provider_name} not found in config, skipping", {"task_type": task_type}, config)
+            continue
+        
+        # Check if provider supports this task
+        task_support_key = f"supports_{task_type}"
+        if not provider_config.get(task_support_key, False):
+            # Try generic support check
+            if task_type == "prd_growth" and not provider_config.get("supports_prd_growth", False):
+                continue
+            elif task_type == "code_generation" and not provider_config.get("supports_code_generation", False):
+                continue
+            elif task_type == "evaluation" and not provider_config.get("supports_evaluation", False):
+                continue
+            elif task_type == "refactoring" and not provider_config.get("supports_refactoring", False):
+                continue
+        
+        # Check execution mode constraints
+        provider_type = provider_config.get("type", "")
+        if provider_type == "api" and not allow_api_calls:
+            log(f"API calls not allowed, skipping provider {provider_name}", {"task_type": task_type}, config)
+            continue
+        if provider_type == "local" and not allow_local_models:
+            log(f"Local models not allowed, skipping provider {provider_name}", {"task_type": task_type}, config)
+            continue
+        if provider_type == "ide_assistant" and not allow_ide_only:
+            log(f"IDE-only mode not allowed, skipping provider {provider_name}", {"task_type": task_type}, config)
+            continue
+        
+        # Try to use this provider
+        log(f"Attempting to use provider: {provider_name} for task: {task_type}", 
+            {"provider": provider_name, "task_type": task_type}, config)
+        
+        try:
+            result = _call_provider(provider_name, provider_config, task_type, prompt, context or {}, config)
+            if result:
+                log(f"Successfully used provider {provider_name} for task {task_type}", 
+                    {"provider": provider_name, "task_type": task_type}, config)
+                return result
+        except Exception as e:
+            log(f"Provider {provider_name} failed: {e}, trying next provider", 
+                {"provider": provider_name, "error": str(e), "task_type": task_type}, config)
+            continue
+    
+    # All providers failed or unavailable, use stub mode
+    fallback_strategy = ai_config.get("fallback_strategy", {})
+    stub_behavior = fallback_strategy.get("stub_mode_behavior", "log_and_continue")
+    
+    log(f"No AI providers available for task {task_type}, using stub mode (behavior: {stub_behavior})", 
+        {"task_type": task_type, "stub_behavior": stub_behavior}, config)
+    
+    if stub_behavior == "error":
+        raise RuntimeError(f"No AI providers available for task {task_type}")
+    elif stub_behavior == "prompt_user":
+        print(f"NOTE: AI task {task_type} requires AI provider, but none are available.")
+        print(f"Prompt was: {prompt[:200]}...")
+        return ""
+    else:  # log_and_continue
+        return ""
+
+
+def _call_provider(provider_name: str, provider_config: dict, task_type: str, 
+                   prompt: str, context: dict, config: Config) -> str:
+    """
+    Internal function to call a specific provider.
+    
+    This function handles provider-specific integration logic.
+    For now, this is mostly a stub that can be extended with actual provider integrations.
+    """
+    provider_type = provider_config.get("type", "")
+    
+    if provider_type == "ide_assistant":
+        # Try Cursor integration if available
+        if provider_name == "cursor" and config._raw_data.get("use_cursor_driver", False):
+            # TODO: Integrate with cursor_driver.scpt
+            log("Cursor integration not fully implemented, using stub", {"provider": provider_name}, config)
+            return ""
+        else:
+            # Generic IDE assistant - would need IDE-specific integration
+            log(f"IDE assistant {provider_name} integration not implemented, using stub", 
+                {"provider": provider_name}, config)
+            return ""
+    
+    elif provider_type == "api":
+        # TODO: Integrate with API providers (OpenAI, Anthropic, etc.)
+        # This would require:
+        # - API key from environment or secure config
+        # - HTTP client to call API
+        # - Error handling and retries
+        log(f"API provider {provider_name} integration not implemented, using stub", 
+            {"provider": provider_name}, config)
+        return ""
+    
+    elif provider_type == "local":
+        # TODO: Integrate with local models (Ollama, etc.)
+        # This would require:
+        # - Local model endpoint configuration
+        # - HTTP client to call local API
+        log(f"Local model {provider_name} integration not implemented, using stub", 
+            {"provider": provider_name}, config)
+        return ""
+    
+    elif provider_type == "stub":
+        # Stub provider - return empty
+        return ""
+    
+    else:
+        log(f"Unknown provider type {provider_type} for {provider_name}, using stub", 
+            {"provider": provider_name, "type": provider_type}, config)
+        return ""
+
+
+def command_ai_status(config: Config, verbose: bool = False) -> int:
+    """
+    Show AI provider configuration and status.
+    
+    Args:
+        config: Config object
+        verbose: If True, show detailed provider information
+    """
+    log("Running 'ai_status' command", {"command": "ai_status", "step": "start"}, config)
+    
+    # TODO: Implement full ai_status logic:
+    # 1. Load ai config
+    # 2. Display AI enabled/disabled, default provider
+    # 3. Display execution modes
+    # 4. List configured providers with capabilities
+    # 5. Display task routing
+    # 6. Show fallback strategy
+    
+    print("ai_status is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would show: AI configuration, providers, task routing, execution modes")
+    return 0
+
+
+def command_ai_policy(config: Config) -> int:
+    """
+    Show AI usage policy and constraints.
+    
+    Args:
+        config: Config object
+    """
+    log("Running 'ai_policy' command", {"command": "ai_policy", "step": "start"}, config)
+    
+    # TODO: Implement full ai_policy logic:
+    # 1. Load ai, security, performance, profiles configs
+    # 2. Summarize execution policy
+    # 3. Summarize security constraints
+    # 4. Summarize performance constraints
+    # 5. Summarize profile constraints
+    # 6. Generate human-readable policy summary
+    
+    print("ai_policy is not fully implemented yet, but stub is reachable and safe.")
+    print("This command would show: AI usage policy, security constraints, execution modes")
+    return 0
+
+
+def verify_prd_integrity(prd_path: str, state: dict, config: Config) -> tuple[bool, str]:
+    """
+    Basic safety checks after operations that write to prd.md.
+    
+    Args:
+        prd_path: Path to prd.md file
+        state: Current state dict (from .auto_state.json)
+        config: Config object
+    
+    Returns:
+        tuple: (is_valid, message)
+        - is_valid: True if integrity check passes
+        - message: Description of any issues found
+    """
+    import hashlib
+    from pathlib import Path
+    
+    prd_file = Path(prd_path)
+    
+    # Check 1: File exists
+    if not prd_file.exists():
+        log("ERROR: prd.md not found after operation", 
+            {"prd_path": prd_path, "step": "integrity_check"}, config)
+        return False, "prd.md file not found"
+    
+    # Check 2: File is readable
+    try:
+        with open(prd_file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            current_line_count = len(lines)
+    except Exception as e:
+        log(f"ERROR: Failed to read prd.md: {e}", 
+            {"prd_path": prd_path, "error": str(e), "step": "integrity_check"}, config)
+        return False, f"Failed to read prd.md: {e}"
+    
+    # Check 3: Compare line count with previous state
+    previous_line_count = state.get("prd_last_line_count", current_line_count)
+    
+    if previous_line_count > 0:
+        ratio = current_line_count / previous_line_count
+        
+        if ratio < 0.5:
+            # Severe truncation detected
+            log(f"ERROR: Severe PRD truncation detected: {current_line_count} lines (was {previous_line_count}, ratio: {ratio:.2f})",
+                {"current_lines": current_line_count, "previous_lines": previous_line_count, 
+                 "ratio": ratio, "step": "integrity_check"}, config)
+            return False, f"Severe PRD truncation: {current_line_count} lines (was {previous_line_count})"
+        
+        elif ratio < 0.7:
+            # Significant decrease detected
+            log(f"WARNING: Significant PRD size decrease: {current_line_count} lines (was {previous_line_count}, ratio: {ratio:.2f})",
+                {"current_lines": current_line_count, "previous_lines": previous_line_count,
+                 "ratio": ratio, "step": "integrity_check"}, config)
+            return True, f"WARNING: PRD size decreased significantly: {current_line_count} lines (was {previous_line_count})"
+    
+    # Check 4: Optional checksum verification
+    if "prd_last_checksum" in state:
+        try:
+            with open(prd_file, 'rb') as f:
+                content = f.read()
+                current_checksum = hashlib.sha256(content).hexdigest()
+            
+            previous_checksum = state.get("prd_last_checksum")
+            if current_checksum != previous_checksum and previous_line_count == current_line_count:
+                # Same line count but different content - might be OK (content changed)
+                log(f"INFO: PRD content changed (same line count, different checksum)",
+                    {"current_checksum": current_checksum[:16], "previous_checksum": previous_checksum[:16] if previous_checksum else None,
+                     "step": "integrity_check"}, config)
+        except Exception as e:
+            log(f"WARNING: Failed to compute checksum: {e}",
+                {"error": str(e), "step": "integrity_check"}, config)
+    
+    # Update state with current metrics
+    state["prd_last_line_count"] = current_line_count
+    try:
+        with open(prd_file, 'rb') as f:
+            content = f.read()
+            state["prd_last_checksum"] = hashlib.sha256(content).hexdigest()
+    except Exception:
+        pass  # Checksum is optional
+    
+    log(f"PRD integrity check passed: {current_line_count} lines",
+        {"line_count": current_line_count, "step": "integrity_check"}, config)
+    
+    return True, f"PRD integrity OK: {current_line_count} lines"
+
+
+def command_validate(config: Config, dry_run: bool = True, verbose: bool = False) -> int:
+    """
+    Run full system validation in dry-run mode.
+    
+    Args:
+        config: Config object
+        dry_run: Always True for validate command (safety)
+        verbose: If True, show detailed output
+    """
+    log("Running 'validate' command", 
+        {"command": "validate", "dry_run": dry_run, "verbose": verbose, "step": "start"}, config)
+    
+    results = {
+        "success": [],
+        "warnings": [],
+        "failures": []
+    }
+    
+    # Step 1: Initialize state
+    try:
+        log("[VALIDATION] Step 1: Initialize state", {}, config)
+        result = command_init(config)
+        if result == 0:
+            results["success"].append("init")
+        else:
+            results["failures"].append("init")
+    except Exception as e:
+        log(f"[VALIDATION] Step 1 failed: {e}", {"error": str(e)}, config)
+        results["failures"].append(f"init: {e}")
+    
+    # Step 2: Check status
+    try:
+        log("[VALIDATION] Step 2: Check status", {}, config)
+        result = command_status(config, verbose=verbose)
+        if result == 0:
+            results["success"].append("status")
+        else:
+            results["warnings"].append("status")
+    except Exception as e:
+        log(f"[VALIDATION] Step 2 failed: {e}", {"error": str(e)}, config)
+        results["failures"].append(f"status: {e}")
+    
+    # Step 3: PRD growth dry-run
+    try:
+        log("[VALIDATION] Step 3: PRD growth dry-run", {}, config)
+        result = command_grow(config, dry_run=True)
+        if result == 0:
+            results["success"].append("grow --dry-run")
+        else:
+            results["warnings"].append("grow --dry-run")
+    except Exception as e:
+        log(f"[VALIDATION] Step 3 failed: {e}", {"error": str(e)}, config)
+        results["failures"].append(f"grow --dry-run: {e}")
+    
+    # Step 4: Implementation plan dry-run
+    try:
+        log("[VALIDATION] Step 4: Implementation plan dry-run", {}, config)
+        result = command_plan_impl(config, dry_run=True)
+        if result == 0:
+            results["success"].append("plan_impl --dry-run")
+        else:
+            results["warnings"].append("plan_impl --dry-run")
+    except Exception as e:
+        log(f"[VALIDATION] Step 4 failed: {e}", {"error": str(e)}, config)
+        results["failures"].append(f"plan_impl --dry-run: {e}")
+    
+    # Step 5: Health checks
+    try:
+        log("[VALIDATION] Step 5: Health checks", {}, config)
+        result = command_doctor(config)
+        if result == 0:
+            results["success"].append("doctor")
+        else:
+            results["warnings"].append("doctor")
+    except Exception as e:
+        log(f"[VALIDATION] Step 5 (doctor) failed: {e}", {"error": str(e)}, config)
+        results["warnings"].append(f"doctor: {e}")
+    
+    try:
+        result = command_smoke_test(config)
+        if result == 0:
+            results["success"].append("smoke_test")
+        else:
+            results["warnings"].append("smoke_test")
+    except Exception as e:
+        log(f"[VALIDATION] Step 5 (smoke_test) failed: {e}", {"error": str(e)}, config)
+        results["warnings"].append(f"smoke_test: {e}")
+    
+    # Step 6: AI & Extensions status
+    try:
+        log("[VALIDATION] Step 6: AI & Extensions status", {}, config)
+        result = command_ai_status(config, verbose=verbose)
+        if result == 0:
+            results["success"].append("ai_status")
+        else:
+            results["warnings"].append("ai_status")
+    except Exception as e:
+        log(f"[VALIDATION] Step 6 (ai_status) failed: {e}", {"error": str(e)}, config)
+        results["warnings"].append(f"ai_status: {e}")
+    
+    try:
+        result = command_extensions_status(config, verbose=verbose)
+        if result == 0:
+            results["success"].append("extensions_status")
+        else:
+            results["warnings"].append("extensions_status")
+    except Exception as e:
+        log(f"[VALIDATION] Step 6 (extensions_status) failed: {e}", {"error": str(e)}, config)
+        results["warnings"].append(f"extensions_status: {e}")
+    
+    # Step 7: Git dry-run (optional)
+    git_config = config._raw_data.get("git", {}) if config._raw_data else {}
+    if git_config.get("enabled", False):
+        try:
+            log("[VALIDATION] Step 7: Git dry-run", {}, config)
+            result = command_git_status(config)
+            if result == 0:
+                results["success"].append("git_status")
+            else:
+                results["warnings"].append("git_status")
+        except Exception as e:
+            log(f"[VALIDATION] Step 7 (git_status) failed: {e}", {"error": str(e)}, config)
+            results["warnings"].append(f"git_status: {e}")
+    
+    # Summarize results
+    total_success = len(results["success"])
+    total_warnings = len(results["warnings"])
+    total_failures = len(results["failures"])
+    
+    if total_failures == 0 and total_warnings == 0:
+        status = "success"
+        exit_code = 0
+    elif total_failures == 0:
+        status = "warnings"
+        exit_code = 0
+    else:
+        status = "failures"
+        exit_code = 1
+    
+    summary = f"[VALIDATION] Run completed: {status} (success: {total_success}, warnings: {total_warnings}, failures: {total_failures})"
+    log(summary, {
+        "validation_status": status,
+        "success_count": total_success,
+        "warnings_count": total_warnings,
+        "failures_count": total_failures,
+        "success": results["success"],
+        "warnings": results["warnings"],
+        "failures": results["failures"]
+    }, config)
+    
+    print("\n=== VALIDATION SUMMARY ===")
+    print(f"Status: {status.upper()}")
+    print(f"Success: {total_success}")
+    print(f"Warnings: {total_warnings}")
+    print(f"Failures: {total_failures}")
+    
+    if results["success"]:
+        print("\n✅ Successful checks:")
+        for item in results["success"]:
+            print(f"  - {item}")
+    
+    if results["warnings"]:
+        print("\n⚠️  Warnings:")
+        for item in results["warnings"]:
+            print(f"  - {item}")
+    
+    if results["failures"]:
+        print("\n❌ Failures:")
+        for item in results["failures"]:
+            print(f"  - {item}")
+    
+    print(f"\nDetailed logs: auto_master.log")
+    
+    return exit_code
+
+
+def command_template_check(config: Config, verbose: bool = False) -> int:
+    """
+    Check template health and readiness for publishing.
+    
+    Args:
+        config: Config object
+        verbose: If True, show detailed output
+    """
+    log("Running 'template_check' command", 
+        {"command": "template_check", "verbose": verbose, "step": "start"}, config)
+    
+    from pathlib import Path
+    import subprocess
+    import fnmatch
+    
+    issues = []
+    warnings = []
+    successes = []
+    
+    repo_root = Path(".")
+    
+    # Core files that must exist
+    core_files = [
+        "prd.md",
+        "auto_master.py",
+        "auto_config.json",
+        "auto_master.sh",
+        "cursor_driver.scpt",
+        ".gitignore",
+        "LICENSE",
+        "README.md"
+    ]
+    
+    # Runtime files that must NOT be committed
+    runtime_files = [
+        ".auto_state.json",
+        "auto_master.log"
+    ]
+    
+    # Suspicious patterns (should not be in template)
+    suspicious_patterns = [
+        ".env",
+        "secrets.json",
+        "*.key",
+        "*.pem",
+        "node_modules/",
+        "venv/",
+        ".venv/",
+        "__pycache__/"
+    ]
+    
+    print("\n=== TEMPLATE HEALTH CHECK ===\n")
+    
+    # Check 1: Core files
+    print("1. Checking core files...")
+    for file in core_files:
+        file_path = repo_root / file
+        if file_path.exists():
+            successes.append(f"Core file present: {file}")
+            if verbose:
+                print(f"  ✅ {file}")
+        else:
+            issues.append(f"Missing core file: {file}")
+            print(f"  ❌ Missing: {file}")
+    
+    # Check 2: Runtime files (should exist but be git-ignored)
+    print("\n2. Checking runtime files...")
+    for file in runtime_files:
+        file_path = repo_root / file
+        if file_path.exists():
+            # Check if git-ignored
+            try:
+                result = subprocess.run(
+                    ["git", "check-ignore", str(file_path)],
+                    capture_output=True,
+                    text=True,
+                    cwd=repo_root
+                )
+                if result.returncode == 0:
+                    successes.append(f"Runtime file {file} exists and is git-ignored")
+                    if verbose:
+                        print(f"  ✅ {file} (exists, git-ignored)")
+                else:
+                    # Check if committed
+                    result = subprocess.run(
+                        ["git", "ls-files", "--error-unmatch", str(file_path)],
+                        capture_output=True,
+                        text=True,
+                        cwd=repo_root
+                    )
+                    if result.returncode == 0:
+                        issues.append(f"Runtime file {file} is committed (should be git-ignored)")
+                        print(f"  ❌ {file} is committed (should be git-ignored)")
+                    else:
+                        warnings.append(f"Runtime file {file} exists but not git-ignored")
+                        print(f"  ⚠️  {file} exists but not in .gitignore")
+            except Exception as e:
+                warnings.append(f"Could not check git status for {file}: {e}")
+                if verbose:
+                    print(f"  ⚠️  {file} (could not verify git status)")
+        else:
+            if verbose:
+                print(f"  ℹ️  {file} (not present, OK for template)")
+    
+    # Check 3: .gitignore patterns
+    print("\n3. Checking .gitignore...")
+    gitignore_path = repo_root / ".gitignore"
+    if gitignore_path.exists():
+        with open(gitignore_path, 'r') as f:
+            gitignore_content = f.read()
+        
+        required_patterns = [
+            ".auto_state.json",
+            "auto_master.log",
+            "*.tmp",
+            ".DS_Store"
+        ]
+        
+        for pattern in required_patterns:
+            if pattern in gitignore_content:
+                successes.append(f".gitignore includes: {pattern}")
+                if verbose:
+                    print(f"  ✅ Pattern found: {pattern}")
+            else:
+                warnings.append(f".gitignore missing pattern: {pattern}")
+                print(f"  ⚠️  Missing pattern: {pattern}")
+    else:
+        issues.append(".gitignore file missing")
+        print("  ❌ .gitignore not found")
+    
+    # Check 4: Suspicious files in root
+    print("\n4. Checking for suspicious files...")
+    root_files = [f for f in repo_root.iterdir() if f.is_file() and not f.name.startswith('.')]
+    root_dirs = [d for d in repo_root.iterdir() if d.is_dir() and not d.name.startswith('.')]
+    
+    suspicious_found = False
+    for item in root_files + root_dirs:
+        name = item.name
+        # Check against suspicious patterns
+        for pattern in suspicious_patterns:
+            if pattern.endswith('/'):
+                if name == pattern.rstrip('/'):
+                    issues.append(f"Suspicious directory in root: {name}")
+                    print(f"  ❌ Suspicious: {name}")
+                    suspicious_found = True
+            else:
+                if fnmatch.fnmatch(name, pattern):
+                    issues.append(f"Suspicious file in root: {name}")
+                    print(f"  ❌ Suspicious: {name}")
+                    suspicious_found = True
+        
+        # Check for project-specific code directories
+        if name in ["src", "app", "backend", "game", "frontend"] and item.is_dir():
+            warnings.append(f"Project-specific directory in root: {name} (may be OK if example)")
+            print(f"  ⚠️  Project directory: {name} (verify if example or should be removed)")
+            suspicious_found = True
+    
+    if not suspicious_found and verbose:
+        print("  ✅ No suspicious files found")
+    
+    # Check 5: Git status
+    print("\n5. Checking git status...")
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            cwd=repo_root
+        )
+        if result.returncode == 0:
+            lines = result.stdout.strip().split('\n') if result.stdout.strip() else []
+            if not lines:
+                successes.append("Git working tree is clean")
+                print("  ✅ Working tree is clean")
+            else:
+                # Check if only runtime files are untracked
+                untracked_runtime = [line for line in lines if line.startswith('??') and 
+                                    any(rf in line for rf in runtime_files)]
+                if untracked_runtime:
+                    successes.append("Only runtime files are untracked (expected)")
+                    if verbose:
+                        print("  ✅ Only runtime files untracked (expected)")
+                else:
+                    warnings.append("Uncommitted changes or untracked files present")
+                    print("  ⚠️  Uncommitted changes or untracked files")
+                    if verbose:
+                        for line in lines[:10]:  # Show first 10
+                            print(f"    {line}")
+        else:
+            warnings.append("Could not check git status")
+            print("  ⚠️  Could not check git status")
+    except Exception as e:
+        warnings.append(f"Git check failed: {e}")
+        print(f"  ⚠️  Git check failed: {e}")
+    
+    # Summary
+    print("\n=== SUMMARY ===\n")
+    total_issues = len(issues)
+    total_warnings = len(warnings)
+    total_successes = len(successes)
+    
+    if total_issues == 0 and total_warnings == 0:
+        status = "✅ PASS"
+        exit_code = 0
+    elif total_issues == 0:
+        status = "⚠️  WARNINGS"
+        exit_code = 0
+    else:
+        status = "❌ FAIL"
+        exit_code = 1
+    
+    print(f"Status: {status}")
+    print(f"Successes: {total_successes}")
+    print(f"Warnings: {total_warnings}")
+    print(f"Issues: {total_issues}\n")
+    
+    if issues:
+        print("Issues to fix:")
+        for issue in issues:
+            print(f"  - {issue}")
+        print()
+    
+    if warnings:
+        print("Warnings:")
+        for warning in warnings:
+            print(f"  - {warning}")
+        print()
+    
+    if verbose and successes:
+        print("Successes:")
+        for success in successes[:10]:  # Show first 10
+            print(f"  - {success}")
+        if len(successes) > 10:
+            print(f"  ... and {len(successes) - 10} more")
+        print()
+    
+    log(f"Template check completed: {status} (issues: {total_issues}, warnings: {total_warnings})",
+        {"status": status, "issues": total_issues, "warnings": total_warnings,
+         "issues_list": issues, "warnings_list": warnings}, config)
+    
+    return exit_code
+
+
+def command_sandbox_status(config: Config) -> int:
+    """
+    Show sandbox configuration and status.
+    
+    Args:
+        config: Config object
+    """
+    log("Running 'sandbox_status' command", 
+        {"command": "sandbox_status", "step": "start"}, config)
+    
+    sandbox_config = config._raw_data.get("sandbox", {}) if config._raw_data else {}
+    enabled = sandbox_config.get("enabled", False)
+    allow_commands = sandbox_config.get("allow_experimental_commands", False)
+    flags = sandbox_config.get("experimental_flags", {})
+    notes = sandbox_config.get("notes", "")
+    
+    print("\n=== SANDBOX STATUS ===\n")
+    print(f"Sandbox: {'✅ Enabled' if enabled else '❌ Disabled (default)'}")
+    print(f"Experimental Commands: {'✅ Enabled' if allow_commands else '❌ Disabled'}")
+    print()
+    
+    print("Experimental Flags:")
+    for flag_name, flag_value in flags.items():
+        status = "✅ Enabled" if flag_value else "❌ Disabled"
+        print(f"  {flag_name}: {status}")
+    
+    if notes:
+        print(f"\nNotes: {notes}")
+    
+    if enabled:
+        print("\n⚠️  WARNING: Sandbox is enabled. Experimental features are active.")
+        print("   Use with caution and review all changes carefully.")
+    
+    print("\nTo enable sandbox, set \"sandbox.enabled\": true in auto_config.json")
+    print("For more information, see: prd.md → # 25. EXPERIMENTS, SANDBOX MODES & FUTURE IDEAS")
+    
+    log(f"Sandbox status: enabled={enabled}, commands={allow_commands}",
+        {"enabled": enabled, "allow_commands": allow_commands, "flags": flags}, config)
+    
+    return 0
+
+
+def command_sandbox_explain(config: Config) -> int:
+    """
+    Explain sandbox purpose and usage.
+    
+    Args:
+        config: Config object
+    """
+    log("Running 'sandbox_explain' command", 
+        {"command": "sandbox_explain", "step": "start"}, config)
+    
+    print("""
+=== SANDBOX EXPLANATION ===
+
+What is the Sandbox?
+  The Sandbox is an optional, experimental space for exploring new
+  ideas and features that are not yet part of the stable core template.
+
+Purpose:
+  - Test new automation commands
+  - Experiment with different strategies (chunking, growth, AI routing)
+  - Try future ideas safely
+  - Record results for potential promotion to core
+
+How to Enable:
+  1. Edit auto_config.json
+  2. Set "sandbox.enabled": true
+  3. Optionally enable specific experimental flags:
+     - alt_chunking: Alternative chunking strategies
+     - aggressive_growth: Faster but potentially lower-quality growth
+     - auto_git_experiments: Experimental git automation
+     - custom_ai_routing: Custom AI provider routing
+
+How to Log Experiments:
+  - Use Meta-Orchestrator: "log experiment EXP-XXX"
+  - Or manually add to prd.md Section 25.2 (Sandbox Experiments Log)
+  - Include: Exp ID, Date/Time, Idea, Files Touched, Result, Decision
+
+Promotion Rules:
+  - Experiments must be validated on real projects
+  - Must pass validation (Step 23)
+  - Must show clear benefit
+  - Must have maintainer approval
+  - See prd.md Section 25.3 for details
+
+Safety:
+  - Sandbox is disabled by default
+  - Experimental features are clearly labeled
+  - Can be disabled at any time
+  - Never affects core behavior when disabled
+  - All experimental operations are logged
+
+For more details, see:
+  - prd.md → # 25. EXPERIMENTS, SANDBOX MODES & FUTURE IDEAS
+    """)
+    
+    log("Sandbox explanation displayed", {}, config)
+    return 0
+
+
+# ============================================================================
 # CLI MAIN
 # ============================================================================
 
@@ -4632,23 +5688,55 @@ def main():
     global _global_config
     
     parser = argparse.ArgumentParser(
-        description="Universal automated PRD enhancement system",
+        description="Universal PRD Automation Orchestrator: manages growth of prd.md, implementation phases, evaluation, and basic deployment/security/performance/analytics hooks. See README.md and prd.md Section 0 for quick start.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
         Commands:
-          init       - Initialize system (build state from PRD)
-          status     - Show system status (use --verbose for chunk details)
-          start      - Start enhancement loop (single pass)
-          enhance    - Alias for 'start' (single pass)
-          grow       - Run autonomous growth loop towards target line count
+          init       - Initialize state from prd.md and auto_config.json (rebuilds .auto_state.json, no AI calls)
+          status     - Show system status (PRD line count, chunk status, growth progress). Use --verbose for detailed chunk breakdown
+          start      - Alias for enhance (single pass)
+          enhance    - Run single enhancement pass (processes chunks using AI or stubs). Use --limit N to process N chunks, --dry-run to test
+          grow       - Use AI (or stubs) to expand and enhance prd.md towards target size & detail. Runs multiple passes until target reached or limits hit
           reset      - Reset automation state
-          sync_roles - Sync Omni-Corp Role Library and Prompt Templates into prd.md
-          git_status - Show git repository and automation status
-          git_sync   - Manually sync changes to git (add, commit, push)
-          doctor     - Run health check and diagnostics (with optional auto-fixes)
-          plan_impl  - Generate implementation plan from PRD
-          impl_phase - Implement a specific phase/task (requires --phase)
-          impl_loop  - Run automated implementation loop for multiple tasks
+          sync_roles - Sync Omni-Corp Role Library and Prompt Templates into prd.md (ensures roles are up to date)
+          git_status - Show git repository and automation status (branch, working tree, remote sync, git automation config)
+          git_sync   - Manually sync changes to git (add, commit, push). Respects git.enable_auto setting for safety
+          doctor     - Run health check and diagnostics (filesystem, config, state, logs, environment). Reports OK/WARN/ERROR severity
+          plan_impl  - Generate or refine the Implementation Plan section in prd.md (requires implementation.enabled=true)
+          impl_phase - Implement or update code for a specific Phase ID defined in prd.md. Requires --phase X.Y.Z, optionally --limit-files N
+          impl_loop  - Run automated implementation loop for multiple tasks. Processes tasks from implementation plan sequentially
+          smoke_test - Run smoke tests to verify automation system works end-to-end (quick verification, no file modifications)
+          benchmark_growth - Measure PRD expansion performance (growth rate, success rate, quality metrics)
+          benchmark_impl   - Test code generation pipeline (implementation planning, file parsing, path validation)
+          deploy     - Deploy application to environment (requires --env). Use --dry-run to preview. See prd.md Section 16
+          deploy_status - Show deployment status for environment (requires --env). See prd.md Section 16
+          monitor    - Monitor application health and generate report. Optionally use --since TIME and --env ENV
+          security_check - Check security configuration and status. Use --dry-run to preview. See prd.md Section 17
+          quick_test - Run quick test suite (--scope basic for unit tests, --scope full for unit+integration). See prd.md Section 17
+          perf_status - Show performance configuration and usage status (AI budgets, chunking tuning, growth limits). Use --verbose for usage analysis
+          perf_suggest - Suggest performance tuning optimizations based on current config and usage. Use --apply to apply suggestions
+          analytics_status - Show analytics configuration and documentation status (events, KPIs, experiments, feedback). Use --verbose for PRD analysis
+          analytics_summarize - Summarize recent analytics activity and patterns. Optionally use --since DAYS to specify time range
+          feedback_summarize - Summarize user feedback from configured channels. Optionally use --channel to filter by channel
+          extensions_status - Show extensions configuration and status (registered extensions, file status). Use --verbose to scan for unregistered extensions
+          extensions_doctor - Check extensions for issues (missing files, undocumented extensions)
+          ai_status - Show AI provider configuration and status (providers, routing, execution modes). Use --verbose for detailed provider information
+          ai_policy - Show AI usage policy and constraints (what's allowed, security, performance)
+          validate - Run full system validation in dry-run mode (safe, non-destructive). Always runs in dry-run mode for safety
+          template_check - Check template health and readiness for publishing (core files, runtime files, suspicious items). Use --verbose for detailed output
+          sandbox_status - Show sandbox configuration and experimental flags status (optional, experimental)
+          sandbox_explain - Explain sandbox purpose, usage, and safety (optional, experimental)
+        
+        Quick Start:
+          1. python3 auto_master.py init
+          2. python3 auto_master.py status
+          3. python3 auto_master.py grow
+        
+        For detailed documentation, see:
+          - README.md (quick start and setup)
+          - prd.md Section 0 (how to read this document)
+          - prd.md Section 20 (developer experience and onboarding)
+          - prd.md Section 11 (Meta-Orchestrator instructions for AI-driven workflows)
         
         Examples:
           python3 auto_master.py init
@@ -4671,12 +5759,16 @@ def main():
           python3 auto_master.py monitor
           python3 auto_master.py security_check --dry-run
           python3 auto_master.py quick_test --scope basic
+          python3 auto_master.py perf_status
+          python3 auto_master.py perf_suggest
+          python3 auto_master.py analytics_status
+          python3 auto_master.py analytics_summarize
         """)
     )
     
     parser.add_argument(
         'command',
-        choices=['init', 'status', 'start', 'enhance', 'grow', 'reset', 'sync_roles', 'git_status', 'git_sync', 'doctor', 'plan_impl', 'impl_phase', 'impl_loop', 'smoke_test', 'benchmark_growth', 'benchmark_impl', 'deploy', 'deploy_status', 'monitor', 'security_check', 'quick_test'],
+        choices=['init', 'status', 'start', 'enhance', 'grow', 'reset', 'sync_roles', 'git_status', 'git_sync', 'doctor', 'plan_impl', 'impl_phase', 'impl_loop', 'smoke_test', 'benchmark_growth', 'benchmark_impl', 'deploy', 'deploy_status', 'monitor', 'security_check', 'quick_test', 'perf_status', 'perf_suggest', 'analytics_status', 'analytics_summarize', 'feedback_summarize', 'extensions_status', 'extensions_doctor', 'ai_status', 'ai_policy', 'validate', 'template_check', 'sandbox_status', 'sandbox_explain'],
         help='Command to execute'
     )
     
@@ -4742,6 +5834,16 @@ def main():
         type=str,
         help='Time range for monitor command (e.g., "1h", "24h")'
     )
+    parser.add_argument(
+        '--apply',
+        action='store_true',
+        help='Apply suggestions (perf_suggest only)'
+    )
+    parser.add_argument(
+        '--channel',
+        type=str,
+        help='Feedback channel to summarize (feedback_summarize only)'
+    )
     
     args = parser.parse_args()
     
@@ -4759,13 +5861,13 @@ def main():
         'status': lambda: command_status(config, verbose=args.verbose),
         'start': lambda: command_start(config, limit=args.limit, dry_run=args.dry_run),
         'enhance': lambda: command_enhance(config, limit=args.limit, dry_run=args.dry_run),
-        'grow': lambda: command_grow(config),
+        'grow': lambda: command_grow(config, dry_run=args.dry_run),
         'reset': lambda: command_reset(config),
         'sync_roles': lambda: command_sync_roles(config),
         'git_status': lambda: command_git_status(config),
-        'git_sync': lambda: command_git_sync(config),
+        'git_sync': lambda: command_git_sync(config, dry_run=args.dry_run),
         'doctor': lambda: command_doctor(config),
-        'plan_impl': lambda: command_plan_impl(config),
+        'plan_impl': lambda: command_plan_impl(config, dry_run=args.dry_run),
         'impl_phase': lambda: command_impl_phase(config, phase_id=args.phase or "", limit_files=args.limit_files, dry_run=args.dry_run) if args.phase else (print("ERROR: --phase required for impl_phase command"), 1)[1],
         'impl_loop': lambda: command_impl_loop(config, max_tasks=args.max_tasks, dry_run=args.dry_run),
         'smoke_test': lambda: command_smoke_test(config),
@@ -4776,6 +5878,19 @@ def main():
         'monitor': lambda: command_monitor(config, since=args.since, env=args.env),
         'security_check': lambda: command_security_check(config, dry_run=args.dry_run, verbose=args.verbose),
         'quick_test': lambda: command_quick_test(config, scope=args.scope, verbose=args.verbose),
+        'perf_status': lambda: command_perf_status(config, verbose=args.verbose),
+        'perf_suggest': lambda: command_perf_suggest(config, apply=args.apply if hasattr(args, 'apply') else False),
+        'analytics_status': lambda: command_analytics_status(config, verbose=args.verbose),
+        'analytics_summarize': lambda: command_analytics_summarize(config, since_days=args.since if hasattr(args, 'since') else 7),
+        'feedback_summarize': lambda: command_feedback_summarize(config, channel=args.channel if hasattr(args, 'channel') else None),
+        'extensions_status': lambda: command_extensions_status(config, verbose=args.verbose),
+        'extensions_doctor': lambda: command_extensions_doctor(config),
+        'ai_status': lambda: command_ai_status(config, verbose=args.verbose),
+        'ai_policy': lambda: command_ai_policy(config),
+        'validate': lambda: command_validate(config, dry_run=True, verbose=args.verbose),
+        'template_check': lambda: command_template_check(config, verbose=args.verbose),
+        'sandbox_status': lambda: command_sandbox_status(config),
+        'sandbox_explain': lambda: command_sandbox_explain(config),
     }
     
     handler = handlers[args.command]
