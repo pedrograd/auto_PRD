@@ -1,223 +1,269 @@
-# PRD Automation Template
+# PRD Master - Minimal Single-File PRD Automation System
 
-This repository is a **complete automation system** for creating, improving, and maintaining Product Requirements Documents (PRDs) using AI assistance.
+A minimal, fully automatic PRD (Product Requirements Document) enhancement system that grows a single master Markdown file to 100,000+ lines through iterative AI-powered enhancement.
+
+## 🎯 Core Philosophy
+
+**ONE master .md file** contains everything:
+- Product vision, requirements, architecture
+- API design, data models, UX flows
+- Implementation strategies, QA plans
+- Prompt libraries for future AI agents
+- Tasks, progress logs, architecture notes
+- All documentation in one place
+
+**MINIMAL file set** (max 5 files):
+1. `master_prd.md` - The single source of truth
+2. `auto_config.json` - Configuration
+3. `auto_master.py` - Main automation script
+4. `auto_master.sh` - Shell wrapper
+5. `cursor_driver.scpt` - Cursor integration (optional)
 
 ## 🚀 Quick Start
 
-### Full Automation (Recommended)
+### 1. Initialize
 
 ```bash
-# Start the complete automation pipeline
-python3 tools/automation/prd_auto.py start --wait 60
+python3 auto_master.py init --description "Your app description here"
 ```
 
-This single command will:
-1. ✅ Create `prd.md` if it doesn't exist (from template)
-2. ✅ Read and analyze your PRD section by section
-3. ✅ Open new chats in Cursor for each section
-4. ✅ Improve each section using AI
-5. ✅ Update `prd.md` with improvements
-6. ✅ Clean up unnecessary files
-7. ✅ Sync with GitHub (fetch, commit, push)
+This creates `master_prd.md` with a comprehensive skeleton structure.
 
-### What's Included
+### 2. Check Status
 
-- **Auto-Improve System**: Automatically improves PRD sections using Cursor AI
-- **PRD Template**: Auto-generates PRD structure if file doesn't exist
-- **GitHub Integration**: Automatic fetch, merge, commit, and push
-- **Cleanup Tools**: Removes unnecessary files automatically
-- **Detailed Logging**: Comprehensive logs for all operations
-- **Section-by-Section Processing**: Processes PRD in manageable sections
-- **New Chat Per Section**: Opens fresh Cursor chat for each section
-
-## 📚 Documentation
-
-- **[START_GUIDE.md](START_GUIDE.md)** - Complete guide for the auto-improve system
-- **[QUICK_START.md](QUICK_START.md)** - Quick reference for all commands
-- **[AUTOMATION_README.md](AUTOMATION_README.md)** - Detailed automation documentation
-
-## 🎯 Key Features
-
-### 1. Automatic PRD Creation
-If `prd.md` doesn't exist, the system creates it from a template automatically.
-
-### 2. Section-by-Section Improvement
-- Splits PRD into sections based on headings (##, ###)
-- Processes each section independently
-- Opens new Cursor chat for each section
-- Preserves all original content and special markers
-
-### 3. GitHub Integration
-- Automatic `git fetch` and `pull`
-- Automatic `git add`, `commit`, and `push`
-- Custom commit messages
-- Safe error handling
-
-### 4. Cleanup
-- Removes `__pycache__/` directories
-- Removes `*.pyc`, `*.pyo` files
-- Removes `.DS_Store` files
-- Keeps repository clean
-
-## 📖 Usage Examples
-
-### Basic Usage
 ```bash
-# Full automation - one command to rule them all (recommended)
-python3 tools/automation/prd_auto.py full_auto --wait 60
-
-# Full pipeline with cleanup and git (start command)
-python3 tools/automation/prd_auto.py start --wait 60
-
-# Only improve PRD (no Git, no cleanup)
-python3 tools/automation/prd_auto.py full_auto --wait 60
-
-# Test mode (dry-run)
-python3 tools/automation/prd_auto.py full_auto --dry-run --limit 1
+python3 auto_master.py status
 ```
 
-### Advanced Usage
+Shows chunk processing status, line counts, and progress.
+
+### 3. Start Full Automation
+
 ```bash
-# Custom commit message
-python3 tools/automation/prd_auto.py start --commit-message "Update PRD with new features"
-
-# Only cleanup
-python3 tools/automation/prd_auto.py cleanup
-
-# Only Git sync
-python3 tools/automation/prd_auto.py git-sync --message "Manual update"
+python3 auto_master.py start
 ```
 
-## 🔧 Requirements
+The system will:
+- Process all chunks in `master_prd.md`
+- Enhance each section iteratively
+- Grow the document toward 100,000+ lines
+- Never shrink or delete content (≥90% length preservation)
 
-- **Python 3.7+**
-- **macOS** (for AppleScript automation)
-- **Cursor** installed and running
-- **macOS Automation Permissions** (System Settings → Privacy & Security → Accessibility)
+### 4. Manual Enhancement
 
-## 📝 Commands
+```bash
+# Enhance all pending chunks
+python3 auto_master.py enhance
+
+# Enhance specific chunk
+python3 auto_master.py enhance --section 5
+
+# Dry run (test without making changes)
+python3 auto_master.py enhance --dry-run
+```
+
+### 5. Retry Failed Chunks
+
+```bash
+python3 auto_master.py retry 3 7 12
+```
+
+## 📋 Commands
 
 | Command | Description |
 |---------|-------------|
-| `full_auto` | **Main command**: Creates/improves PRD, builds prd_enhanced.md |
-| `start` | Full pipeline: full_auto + cleanup + git-sync |
-| `enhance` | Enhance existing PRD chunks |
-| `run` | Process chunks (normal mode) |
-| `git-sync` | Sync with GitHub (fetch, pull, commit, push) |
-| `cleanup` | Remove unnecessary files |
-| `init` | Initialize system (create chunks) |
-| `status` | Show chunk status |
-| `retry` | Retry failed chunks |
-| `reset` | Reset state (rebuild chunks) |
+| `init [--description TEXT]` | Initialize `master_prd.md` if missing |
+| `status` | Show processing status and progress |
+| `start [--target-lines N] [--wait SEC] [--dry-run]` | Full automation mode |
+| `enhance [--section N] [--wait SEC] [--dry-run]` | Enhance chunks manually |
+| `retry CHUNK_IDS...` | Reset failed chunks to pending |
 
-## 🎓 Getting Started
-
-1. **Clone or copy this repository**
-   ```bash
-   git clone your-repo
-   cd your-repo
-   ```
-
-2. **Run the automation**
-   ```bash
-   # Recommended: Full automation
-   python3 tools/automation/prd_auto.py full_auto --wait 60
-   
-   # Or: Full pipeline with cleanup and git
-   python3 tools/automation/prd_auto.py start --wait 60
-   ```
-
-3. **Check the results**
-   - View improved `prd.md`
-   - Check logs: `tail -f tools/automation/prd_auto.log`
-   - Verify Git commits: `git log`
-
-## 🔍 How It Works
-
-1. **PRD Detection**: Checks if `prd.md` exists, creates from template if missing
-2. **Section Analysis**: Splits PRD into sections based on markdown headings
-3. **AI Processing**: For each section:
-   - Opens new Cursor chat
-   - Sends section to AI for improvement
-   - Extracts improved version
-4. **PRD Update**: Replaces original sections with improved versions
-5. **Cleanup**: Removes unnecessary files
-6. **Git Sync**: Commits and pushes changes to GitHub
-
-## 📋 File Structure
-
-```
-.
-├── prd.md                          # Your PRD (auto-created if missing)
-├── START_GUIDE.md                  # Complete usage guide
-├── QUICK_START.md                  # Quick reference
-├── AUTOMATION_README.md            # Detailed docs
-├── README.md                       # This file
-└── tools/
-    └── automation/
-        ├── prd_auto.py             # Main automation script
-        ├── prd_auto_config.json    # Configuration
-        ├── cursor_driver.scpt      # Cursor driver (reuse chat)
-        ├── cursor_driver_new_chat.scpt  # Cursor driver (new chat)
-        ├── prd_template.md         # PRD template
-        ├── worker_prompt.md        # Worker prompt template
-        └── worker_prompt_enhance.md # Enhancement prompt template
-```
-
-## 🛠️ Configuration
-
-Edit `tools/automation/prd_auto_config.json`:
+## ⚙️ Configuration (`auto_config.json`)
 
 ```json
 {
-  "project_name": "Your Project",
-  "prd_path": "prd.md",
-  "chunk_size_lines": 100,
-  "default_wait_seconds": 60
+  "master_md_path": "master_prd.md",
+  "project_name": "PRD Master System",
+  "chunk_strategy": "by_heading",
+  "chunk_size_lines": 200,
+  "min_chunk_lines": 50,
+  "max_chunk_lines": 500,
+  "wait_seconds": 60,
+  "min_length_ratio": 0.90,
+  "target_lines": 100000,
+  "single_window_new_tab": true,
+  "cursor_driver_path": "cursor_driver.scpt",
+  "max_iterations": 1000,
+  "chunks_per_batch": 5,
+  "delay_between_chunks_seconds": 2
+}
+```
+
+### Key Settings
+
+- **`chunk_strategy`**: `"by_heading"` (split by `# 1.`, `# 2.` headings) or `"fixed_lines"` (fixed line ranges)
+- **`min_length_ratio`**: Minimum length preservation (0.90 = 90% of original must be preserved)
+- **`target_lines`**: Target document size (default: 100,000 lines)
+- **`wait_seconds`**: Time to wait for AI response in Cursor
+
+## 🛡️ Safety Guarantees
+
+### Non-Destructive Enhancement
+
+1. **Never shrinks content** - Enhanced chunks must be ≥90% of original length
+2. **Never deletes lines** - All content is preserved, obsolete items marked `[DEPRECATED]`
+3. **Processes all lines** - Every line belongs to exactly one chunk, no gaps or overlaps
+4. **Validates before update** - Length checks prevent data loss
+
+### Error Handling
+
+- Failed chunks are marked `failed` and logged
+- Original content is never modified if enhancement fails
+- State is saved after each chunk to allow recovery
+- Retry mechanism for failed chunks
+
+## 📁 File Structure
+
+```
+PRD_auto/
+├── master_prd.md          # Single master PRD (grows to 100k+ lines)
+├── auto_config.json       # Configuration
+├── auto_master.py         # Main automation script
+├── auto_master.sh         # Shell wrapper
+├── cursor_driver.scpt     # Cursor integration (macOS)
+├── .auto_state.json       # Runtime state (git-ignored)
+├── auto_master.log        # Log file (git-ignored)
+└── .gitignore            # Git ignore rules
+```
+
+## 🔄 How It Works
+
+### Chunking Strategy
+
+**By Heading** (default):
+- Splits document by top-level headings (`# 1.`, `# 2.`, etc.)
+- Each section becomes one chunk
+- Natural semantic boundaries
+
+**Fixed Lines**:
+- Splits into fixed-size chunks (e.g., 200 lines)
+- Respects heading boundaries when possible
+- Useful for very large documents
+
+### Enhancement Process
+
+1. **Load chunk** from `master_prd.md`
+2. **Build prompt** with enhancement instructions
+3. **Send to Cursor** via AppleScript (or API)
+4. **Extract improved section** from transcript
+5. **Validate length** (must be ≥90% of original)
+6. **Update file** with improved content
+7. **Save state** for recovery
+
+### Iterative Growth
+
+- Each chunk is enhanced multiple times as document grows
+- New sections are automatically detected and added to chunk map
+- System continues until target line count reached
+- Can run overnight to generate comprehensive PRD
+
+## 🎨 Master PRD Structure
+
+The `master_prd.md` file contains these sections:
+
+1. **Product Overview** - Vision, mission, goals
+2. **Users & Use Cases** - Personas, stories, flows
+3. **Functional Requirements** - Features, details, edge cases
+4. **Non-Functional Requirements** - Performance, security, scalability
+5. **Architecture** - System design, tech stack, patterns
+6. **Data Models** - Entities, relationships, schema
+7. **API Design** - Endpoints, formats, auth
+8. **UX & Flows** - User flows, wireframes, components
+9. **Implementation Strategy** - Phases, milestones, roadmap
+10. **QA & Testing** - Strategy, test cases, QA processes
+11. **Prompt Library** - Prompts for dev/UX/arch agents
+12. **Tasks & Progress** - Current tasks, completed work, blockers
+13. **Architecture Notes** - System design notes, technical decisions
+14. **Implementation Notes** - Development notes, code patterns
+15. **Progress Log** - Daily progress tracking
+16. **Notes & Future Work** - Open questions, enhancements, deprecated items
+
+## 🔧 Cursor Integration
+
+The system uses AppleScript to interact with Cursor on macOS:
+
+1. Activates existing Cursor window (no new window)
+2. Opens new chat tab (Cmd+K)
+3. Pastes enhancement prompt
+4. Sends message
+5. Waits for response
+6. Copies transcript
+7. Returns to Python for processing
+
+**Requirements:**
+- macOS with Cursor installed
+- Cursor must be running
+- Accessibility permissions may be required
+
+## 📊 State Management
+
+State is saved in `.auto_state.json`:
+
+```json
+{
+  "version": "1.0",
+  "created_at": "2025-01-XX...",
+  "updated_at": "2025-01-XX...",
+  "master_file": "master_prd.md",
+  "total_lines": 1234,
+  "chunks": [
+    {
+      "id": 1,
+      "title": "Product Overview",
+      "start_line": 1,
+      "end_line": 150,
+      "status": "done",
+      "attempts": 1,
+      "length_ratio": 1.15
+    },
+    ...
+  ]
 }
 ```
 
 ## 🐛 Troubleshooting
 
-### Cursor Not Responding
-- Ensure Cursor is running
-- Check macOS Automation permissions
-- Try `--dry-run` to test without Cursor
+### Cursor not responding
+- Ensure Cursor is running and frontmost
+- Check AppleScript permissions in System Preferences
+- Try increasing `wait_seconds` in config
 
-### Git Errors
-- Check Git configuration: `git config --list`
-- Verify remote: `git remote -v`
-- Use `--no-git` to skip Git operations
+### Chunks failing
+- Check `auto_master.log` for error messages
+- Verify chunk bounds are valid (file may have changed)
+- Use `retry` command to reset failed chunks
 
-### Section Not Found
-- Ensure PRD has proper markdown headings (##, ###)
-- Check section name spelling
-- Use `--dry-run` to see which sections are found
+### Content being lost
+- Check `min_length_ratio` in config (should be 0.90+)
+- Review logs for length validation warnings
+- Failed chunks preserve original content
 
-## 📊 Logging
+### Slow processing
+- Reduce `chunks_per_batch` in config
+- Increase `delay_between_chunks_seconds`
+- Process chunks manually with `enhance --section N`
 
-All operations are logged to `tools/automation/prd_auto.log`:
+## 🎯 Use Cases
 
-```bash
-# View logs
-tail -f tools/automation/prd_auto.log
+1. **New Project**: Start with `init`, describe your app, run `start`
+2. **Existing PRD**: Place content in `master_prd.md`, run `init` to build chunk map
+3. **Incremental Enhancement**: Use `enhance` to improve specific sections
+4. **Overnight Generation**: Run `start` and let it work toward 100k lines
 
-# Search logs
-grep "auto-improve" tools/automation/prd_auto.log
-```
+## 📝 License
+
+See LICENSE file.
 
 ## 🤝 Contributing
 
-This is a template repository. Feel free to:
-- Fork and customize for your needs
-- Report issues
-- Suggest improvements
-
-## 📄 License
-
-See [LICENSE](LICENSE) file.
-
----
-
-**Ready to start?** Run: `python3 tools/automation/prd_auto.py full_auto --wait 60`
-
+This is a template system designed to be copied and customized for each project. Feel free to adapt it to your needs!

@@ -40,13 +40,14 @@ A complete automation system that:
 - `LICENSE` – License file (optional)
 
 **Under `tools/automation/`:**
-- `prd_auto.py` – Main orchestrator script (CLI)
+- `prd_auto.py` – Main orchestrator script (CLI) - **ONLY orchestrator, no other Python files**
 - `prd_auto.sh` – Shell wrapper: `python3 tools/automation/prd_auto.py "$@"`
 - `prd_auto_config.json` – Repo-specific settings
 - `worker_prompt.md` – Worker instruction template for normal runs
-- `worker_prompt_enhance.md` – Specialized template for PRD enhancement
-- `cursor_driver.scpt` – AppleScript driver for Cursor/Antigravity on macOS
-- `QUICK_START.md` – Quick-start focused on automation CLI
+- `worker_prompt_enhance.md` – Specialized template for PRD enhancement (with non-destructive validation)
+- `cursor_driver.scpt` – AppleScript driver for Cursor (reuse chat)
+- `cursor_driver_new_chat.scpt` – AppleScript driver for Cursor (new chat tab per chunk)
+- `prd_template.md` – Template PRD used when `prd.md` doesn't exist (optional)
 
 **Runtime files (auto-generated, ignored by git):**
 - `.prd_auto_state.json` – Chunk state for normal runs
@@ -54,9 +55,10 @@ A complete automation system that:
 - `tools/automation/prd_auto.log` – Detailed operation logs
 - `tools/automation/output_chunk_*.txt` – Chat transcripts (normal mode)
 - `tools/automation/enhanced_chunk_*.txt` – Chat transcripts (enhancement mode)
-- `tools/automation/improved_chunk_*.md` – Individual improved chunks
 - `prd_enhanced.md` – Final enhanced PRD (generated when all chunks done)
 - `prd_enhanced_notes.md` – Aggregated notes from enhancement
+
+**Important**: The system never deletes or modifies `prd.md`. Enhanced chunks are stored in state files and assembled into `prd_enhanced.md` only when all chunks are processed. You can review `prd_enhanced.md` and decide whether to replace `prd.md` or keep both.
 
 ## Requirements
 

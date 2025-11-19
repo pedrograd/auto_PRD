@@ -1,36 +1,32 @@
-# PRD Automation Runtime Files
-.prd_auto_state.json
-.prd_enhance_state.json
-tools/automation/prd_auto.log
-tools/automation/output_chunk_*.txt
-tools/automation/enhanced_chunk_*.txt
-tools/automation/improved_chunk_*.md
-tools/automation/improved_chunk_*_notes.md
-tools/automation/auto_improve_section_*.txt
-
-# Generated PRD files (optional - uncomment if you don't want to commit enhanced PRD)
-# prd_enhanced.md
-# prd_enhanced_notes.md
+# PRD Master Runtime Files (created automatically, ignored by git)
+.auto_state.json
+.auto_state.json.backup.*
+.auto_enhance_state.json
+auto_master.log
+auto_master.log.backup.*
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
-.Python
 
 # macOS
 .DS_Store
-.AppleDouble
-.LSOverride
 
 # IDE
 .vscode/
 .idea/
 *.swp
-*.swo
-*~
 
-# Logs
-*.log
+# Transcripts and temporary files
+transcripts.log
+all_transcripts.md
+output_chunk_*.txt
+enhanced_chunk_*.txt
+auto_improve_section_*.md
+*.tmp
 
+# Legacy automation files (deprecated)
+.prd_auto_state.json
+.prd_enhance_state.json
+prd_auto.log
