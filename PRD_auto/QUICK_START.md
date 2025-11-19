@@ -1,5 +1,19 @@
 # PRD Automation Quick Start Guide
 
+## 🚀 Quick Start (One Command)
+
+```bash
+# Full automation: creates/improves PRD, builds prd_enhanced.md
+python3 tools/automation/prd_auto.py full_auto --wait 60
+```
+
+This single command will:
+1. ✅ Create `prd.md` if it doesn't exist (from template)
+2. ✅ Initialize the system (chunk PRD)
+3. ✅ Process each chunk in Cursor (new chat tab per chunk)
+4. ✅ Build `prd_enhanced.md` with all improvements
+5. ✅ Log everything to `tools/automation/prd_auto.log`
+
 ## First-Time Setup
 
 1. **Initialize the system:**
@@ -67,13 +81,22 @@ python3 tools/automation/prd_auto.py reset
 ```
 Rebuilds state from scratch (useful if PRD changed significantly). Does not delete outputs or logs.
 
+### Full Automation (Recommended)
+```bash
+python3 tools/automation/prd_auto.py full_auto --wait 60
+```
+- Creates `prd.md` if missing (from template)
+- Initializes system automatically
+- Processes all chunks through enhancement
+- Builds single `prd_enhanced.md` file (no intermediate files)
+- All transcripts saved to `tools/automation/enhanced_chunk_*.txt`
+
 ### Enhance the Entire PRD
 ```bash
 python3 tools/automation/prd_auto.py enhance --wait 60
 ```
 - Reuses existing chunk definitions
 - Sends each chunk through the enhancement worker prompt
-- Creates `tools/automation/improved_chunk_<id>.md` files
 - Once all chunks are done, writes `prd_enhanced.md` (and optional `prd_enhanced_notes.md`)
 
 **With options:**

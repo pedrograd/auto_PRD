@@ -1,68 +1,72 @@
-You are an expert product requirements engineer and AI prompt designer.
+# Enhancement Worker Prompt Template
 
-**Context:**
-- You are processing a large Product Requirements Document (PRD) that is being split into chunks for systematic enhancement.
-- You will receive a short project overview and one chunk of the PRD.
-- Work ONLY on the provided chunk; do not assume context from other chunks.
-- The PRD is long and processed in chunks, so preserve all information and make each chunk self-contained where possible.
+You are helping to enhance a chunk of a Product Requirements Document (PRD) for a project called **{{PROJECT_NAME}}**.
 
-**You will receive:**
-1. A short description of the project (from the PRD overview section).
-2. A raw chunk from the PRD (which may be messy, incomplete, or need enhancement).
+## Context
 
-**Your responsibilities for THIS CHUNK ONLY:**
+This chunk is part of a longer PRD document (`prd.md`). The full project overview is provided below for context.
 
-1. **Preserve and Clarify**
-   - Keep all original information and intent.
-   - Rewrite for clarity, structure, and professionalism.
-   - Fix grammar, split long paragraphs, and group related ideas logically.
+## Project Overview
 
-2. **Enhance the Content**
-   - Where the text is vague, expand it into:
-     - User stories
-     - Functional requirements
-     - Non-functional requirements
-     - Edge cases
-   - If you invent reasonable details, mark them clearly as:
-     `[ASSUMPTION] <your assumed detail>`
+{{PROJECT_OVERVIEW}}
 
-3. **Prompt-Friendly Additions**
-   - When the chunk references AI behaviour, UX flows, or guidance that could become an in-product prompt, include a candidate block:
+---
 
-     ### PROMPT CANDIDATE
-     - Scope: <where this would be used>
-     - Type: system | user | tool | few-shot | etc.
+## Your Task
 
-     ```prompt
-     <prompt draft>
-     ```
+Enhance the following chunk of the PRD. Your goal is to create a professional, improved version that:
 
-4. **Do NOT delete information**
-   - Never drop concepts or requirements silently.
-   - You may mark items as `[DEPRECATED] <reason>` if they should be replaced.
+1. **Preserves all information** – Do not remove or lose any content.
 
-### Output Requirements
+2. **Improves clarity and structure** – Rewrite for better readability, professional language, and logical flow.
 
-**CRITICAL: You MUST wrap your improved chunk between these exact markers:**
+3. **Expands vague parts** – Turn vague notes into:
+   - Clear user stories
+   - Explicit functional requirements
+   - Non-functional requirements
+   - Edge cases
+   - Success criteria
+
+4. **Marks assumptions** – If you infer or invent reasonable details, mark them as:
+   ```
+   [ASSUMPTION] <your assumption>
+   ```
+
+5. **Identifies open questions** – Mark unclear items as:
+   ```
+   [OPEN_QUESTION] <description>
+   ```
+
+6. **Preserves special markers** – Keep any existing `[ASSUMPTION]`, `[OPEN_QUESTION]`, `[DEPRECATED]`, or `PROMPT` blocks exactly as they are.
+
+7. **Suggests prompt candidates** – If you identify opportunities for new AI prompts that should be added to the Prompt Library (Section 9), suggest them as:
+   ```
+   [PROMPT_CANDIDATE] <brief description of the prompt and where it would be used>
+   ```
+
+## Chunk Content
+
+{{CHUNK_TEXT}}
+
+---
+
+## Output Format
+
+You MUST wrap your improved chunk between these exact markers:
 
 ```
 <<<IMPROVED_CHUNK_START>>>
-<your improved Markdown chunk here>
+... your improved markdown for this chunk ...
 <<<IMPROVED_CHUNK_END>>>
 ```
 
-**Then follow with:**
+After the improved chunk, provide a "Notes for This Chunk" section:
 
-```
 ### Notes for This Chunk
-- [ASSUMPTION] <item 1>
-- [ASSUMPTION] <item 2>
-- [OPEN_QUESTION] <question 1>
-- [PROMPT CANDIDATE] <if any>
-```
 
-**Important:**
-- The markers `<<<IMPROVED_CHUNK_START>>>` and `<<<IMPROVED_CHUNK_END>>>` are REQUIRED and must appear exactly as shown.
-- Place the improved chunk content between these markers.
-- Any notes, assumptions, or prompt candidates go AFTER the end marker.
+- [ASSUMPTION] ... (if any)
+- [OPEN_QUESTION] ... (if any)
+- [PROMPT_CANDIDATE] ... (if any)
+
+The improved chunk will be concatenated with other chunks to build the final `prd_enhanced.md`, so ensure it flows naturally and maintains proper Markdown structure.
 

@@ -9,11 +9,27 @@ on run argv
 			delay 0.5
 		end tell
 		
-		-- Open or focus chat (Cmd+L to open chat)
+		-- Open new chat in Cursor
+		-- Method: Cmd+K opens command palette, then type "new chat" or use arrow keys
 		tell application "System Events"
 			tell process "Cursor"
-				keystroke "l" using command down
-				delay 1
+				-- Open command palette (Cmd+K)
+				keystroke "k" using command down
+				delay 0.8
+				
+				-- Type "new chat" to find new chat option
+				keystroke "new chat"
+				delay 0.5
+				
+				-- Press Enter to select "New Chat"
+				key code 36
+				delay 1.5
+				
+				-- Alternative: If Cmd+K doesn't work, try Cmd+L then Cmd+Shift+N
+				-- keystroke "l" using command down
+				-- delay 0.5
+				-- keystroke "n" using {command down, shift down}
+				-- delay 1.5
 				
 				-- Paste the prompt
 				set the clipboard to promptText

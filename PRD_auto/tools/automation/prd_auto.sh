@@ -1,5 +1,4 @@
-#!/bin/zsh
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-python3 "$SCRIPT_DIR/prd_auto.py" "$@"
+#!/bin/bash
+# Shell wrapper for prd_auto.py
+python3 "$(dirname "$0")/prd_auto.py" "$@"
 

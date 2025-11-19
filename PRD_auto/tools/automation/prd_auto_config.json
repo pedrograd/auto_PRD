@@ -1,5 +1,5 @@
 {
-  "project_name": "Sample Productivity Companion",
+  "project_name": "PRD Automation Template",
   "prd_path": "prd.md",
   "chunk_strategy": "fixed_lines",
   "chunk_size_lines": 100,
