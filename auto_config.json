@@ -1,0 +1,333 @@
+{
+  "master_md_path": "prd.md",
+  "state_path": ".auto_state.json",
+  "log_path": "auto_master.log",
+  "chunk_strategy": "fixed_lines",
+  "chunk_size_lines": 120,
+  "wait_seconds": 60,
+  "max_parallel_chats": 1,
+  "min_length_ratio_ok": 0.9,
+  "cursor_driver_path": "cursor_driver.scpt",
+  "use_cursor_driver": false,
+  "growth": {
+    "target_line_count": 100000,
+    "max_passes": 50,
+    "max_chunks_per_pass": 20,
+    "rebuild_state_each_pass": true,
+    "stop_when_all_done": true
+  },
+  "git": {
+    "enable_auto": false,
+    "remote_name": "origin",
+    "branch_name": "main",
+    "auto_add_paths": [
+      "prd.md",
+      "auto_config.json",
+      "auto_master.py",
+      "auto_master.sh",
+      "cursor_driver.scpt",
+      ".auto_state.json",
+      "auto_master.log",
+      ".gitignore",
+      "LICENSE",
+      "README.md"
+    ],
+    "commit_prefix": "[AUTO-PRD]",
+    "commit_after_each_pass": true,
+    "push_after_each_pass": false,
+    "pull_before_sync": true
+  },
+  "safety": {
+    "enable_doctor_auto_fixes": false,
+    "max_consecutive_failures": 5,
+    "stop_on_invariant_violation": true,
+    "doctor_scan_log_lines": 5000,
+    "allow_config_autofix": false
+  },
+  "implementation": {
+    "enabled": false,
+    "primary_target_type": "web",
+    "primary_language": "typescript",
+    "primary_framework": "nextjs",
+    "project_root": ".",
+    "source_dir": "src",
+    "generated_dir": "src/generated",
+    "test_dir": "tests",
+    "impl_plan_section_id": "5. IMPLEMENTATION & ENGINEERING NOTES",
+    "impl_tasks_section_id": "9. TASKS, BACKLOG & ROADMAP",
+    "impl_max_files_per_phase": 5,
+    "impl_allow_overwrite_generated": true,
+    "impl_never_overwrite_manual": true,
+    "default_roles_for_impl": [
+      "Principal Software Architect",
+      "Senior Mobile Developer",
+      "Full-Stack Web Developer",
+      "AI/ML Engineer",
+      "DevOps & Cloud Architect"
+    ]
+  },
+  "profiles": {
+    "default_profile": "hands_free_local",
+    "profiles": {
+      "hands_free_local": {
+        "description": "Local development with full automation and Cursor integration",
+        "can_run_shell": true,
+        "can_edit_files": true,
+        "can_use_cursor_driver": true,
+        "requires_git": false,
+        "requires_cursor": false,
+        "risk_level": "low",
+        "auto_run_doctor_before_start": true,
+        "auto_plan_impl_after_grow": false,
+        "auto_impl_loop_after_plan": false,
+        "auto_git_sync_after_changes": false,
+        "command_execution_mode": "direct",
+        "file_edit_mode": "direct"
+      },
+      "hands_free_no_cursor": {
+        "description": "Local development with full automation but no Cursor driver",
+        "can_run_shell": true,
+        "can_edit_files": true,
+        "can_use_cursor_driver": false,
+        "requires_git": false,
+        "requires_cursor": false,
+        "risk_level": "low",
+        "auto_run_doctor_before_start": true,
+        "auto_plan_impl_after_grow": false,
+        "auto_impl_loop_after_plan": false,
+        "auto_git_sync_after_changes": false,
+        "command_execution_mode": "direct",
+        "file_edit_mode": "direct"
+      },
+      "assistive_read_only": {
+        "description": "Read-only assistance mode, suggests commands but doesn't execute",
+        "can_run_shell": false,
+        "can_edit_files": false,
+        "can_use_cursor_driver": false,
+        "requires_git": false,
+        "requires_cursor": false,
+        "risk_level": "none",
+        "auto_run_doctor_before_start": false,
+        "auto_plan_impl_after_grow": false,
+        "auto_impl_loop_after_plan": false,
+        "auto_git_sync_after_changes": false,
+        "command_execution_mode": "suggest",
+        "file_edit_mode": "suggest"
+      },
+      "semi_automatic": {
+        "description": "Semi-automatic mode, requires confirmation for major operations",
+        "can_run_shell": true,
+        "can_edit_files": true,
+        "can_use_cursor_driver": false,
+        "requires_git": false,
+        "requires_cursor": false,
+        "risk_level": "low",
+        "auto_run_doctor_before_start": true,
+        "auto_plan_impl_after_grow": false,
+        "auto_impl_loop_after_plan": false,
+        "auto_git_sync_after_changes": false,
+        "command_execution_mode": "confirm",
+        "file_edit_mode": "confirm"
+      }
+    }
+  },
+  "domain_packs": {
+    "enabled": true,
+    "default_pack": "generic_app",
+    "packs": {
+      "generic_app": {
+        "description": "Default pack for general-purpose apps (mobile/web/backend).",
+        "primary_target_type": "multi",
+        "suggested_roles": [
+          "Chief Product Officer (CPO)",
+          "Principal Software Architect",
+          "Senior Mobile Developer",
+          "Full-Stack Web Developer",
+          "AI/ML Engineer",
+          "DevOps & Cloud Architect"
+        ],
+        "suggested_stack": {
+          "mobile": "React Native or Flutter",
+          "web": "React/Next.js",
+          "backend": "Node.js or Python/FastAPI"
+        },
+        "default_phase_patterns": ["MVP_CORE", "AUTH", "SETTINGS"],
+        "default_impl_tracks": ["Client", "Backend", "AI", "Infra"]
+      },
+      "mobile_app": {
+        "description": "Mobile-first apps (iOS/Android) with native-feel UI.",
+        "primary_target_type": "mobile",
+        "suggested_roles": [
+          "Chief Product Officer (CPO)",
+          "Senior Mobile Developer",
+          "UI/UX Lead Designer",
+          "AI/ML Engineer"
+        ],
+        "suggested_stack": {
+          "mobile": "React Native or Flutter"
+        },
+        "default_phase_patterns": ["MVP_CORE", "AUTH", "PUSH_NOTIFICATIONS", "OFFLINE_MODE"],
+        "default_impl_tracks": ["Client", "Backend", "AI"]
+      },
+      "web_app": {
+        "description": "Web-first apps or SaaS dashboards.",
+        "primary_target_type": "web",
+        "suggested_roles": [
+          "Chief Product Officer (CPO)",
+          "Full-Stack Web Developer",
+          "UI/UX Lead Designer",
+          "DevOps & Cloud Architect"
+        ],
+        "suggested_stack": {
+          "web": "Next.js or similar",
+          "backend": "Node.js/Express or Python/FastAPI"
+        },
+        "default_phase_patterns": ["MVP_CORE", "AUTH", "ANALYTICS", "BILLING"],
+        "default_impl_tracks": ["Client", "Backend", "Data"]
+      },
+      "game_2d": {
+        "description": "2D game (mobile/desktop/web) with core loop, levels, and monetization.",
+        "primary_target_type": "game",
+        "suggested_roles": [
+          "Lead Game Producer",
+          "Gameplay Programmer",
+          "Level Designer (Game)",
+          "Technical Artist (Tech Art)"
+        ],
+        "suggested_stack": {
+          "engine": "Unity or Godot"
+        },
+        "default_phase_patterns": ["CORE_LOOP", "LEVELS", "UI", "MONETIZATION"],
+        "default_impl_tracks": ["Gameplay", "Art/Assets", "Backend (optional)"]
+      },
+      "ai_tool": {
+        "description": "AI-powered assistant, generator, or automation tool.",
+        "primary_target_type": "ai_tool",
+        "suggested_roles": [
+          "AI/ML Engineer",
+          "Data Scientist & Analyst",
+          "DevOps & Cloud Architect"
+        ],
+        "suggested_stack": {
+          "backend": "Python/FastAPI or Node.js",
+          "ai": "LLM API integration"
+        },
+        "default_phase_patterns": ["MVP_CORE", "AI_INTEGRATION", "SAFETY_GUARDS", "LOGGING"],
+        "default_impl_tracks": ["Backend", "AI", "Infra"]
+      }
+    }
+  },
+  "deployment": {
+    "enabled": true,
+    "environments": {
+      "local": {
+        "description": "Developer local environment (no remote deployment).",
+        "type": "local",
+        "auto_deploy": false,
+        "requires_ci": false,
+        "requires_approval": false
+      },
+      "preview": {
+        "description": "Auto-built preview for feature branches or PRs.",
+        "type": "preview",
+        "auto_deploy": false,
+        "requires_ci": true,
+        "requires_approval": false
+      },
+      "staging": {
+        "description": "Shared pre-production environment for final testing.",
+        "type": "staging",
+        "auto_deploy": false,
+        "requires_ci": true,
+        "requires_approval": true
+      },
+      "production": {
+        "description": "Primary production environment for real users.",
+        "type": "production",
+        "auto_deploy": false,
+        "requires_ci": true,
+        "requires_approval": true
+      }
+    },
+    "default_environment": "local",
+    "ci_system": "generic",
+    "deploy_strategy": "manual_hooks",
+    "deploy_hooks": {
+      "build_command": "npm run build",
+      "test_command": "npm test",
+      "lint_command": "npm run lint",
+      "package_command": null,
+      "deploy_command_template": "echo 'Deploy to {env}'",
+      "rollback_command_template": null,
+      "health_check_command": null
+    },
+    "monitoring": {
+      "enabled": true,
+      "log_sources": ["auto_master.log"],
+      "metrics_sources": [],
+      "alert_policy": "manual_review",
+      "basic_thresholds": {
+        "max_error_rate_percent": 5,
+        "max_failed_deploys": 3,
+        "min_deploy_interval_minutes": 15
+      }
+    }
+  },
+  "security": {
+    "enabled": true,
+    "data_classification": {
+      "levels": ["public", "internal", "sensitive", "restricted"],
+      "default_level": "internal",
+      "require_classification": false
+    },
+    "authn_authz": {
+      "required": true,
+      "preferred_flows": ["email_password", "oauth2", "social_login"],
+      "allow_anonymous_usage": false,
+      "session_management": "required",
+      "password_policy": {
+        "min_length": 8,
+        "require_complexity": true
+      }
+    },
+    "compliance": {
+      "regimes": [],
+      "app_store_policies": true,
+      "logging_pii": "forbid",
+      "data_retention_days": 365,
+      "require_privacy_policy": true,
+      "require_terms_of_service": true
+    },
+    "testing": {
+      "enabled": true,
+      "unit_tests_required": true,
+      "integration_tests_recommended": true,
+      "security_tests_recommended": true,
+      "test_command": "npm test",
+      "test_coverage_threshold": 70
+    },
+    "code_scanning": {
+      "enabled": false,
+      "tools": [],
+      "run_on_ci_only": true,
+      "fail_on_critical": true
+    },
+    "secrets_management": {
+      "enabled": true,
+      "allowed_locations": ["env_vars", "secret_manager"],
+      "forbidden_locations": ["prd.md", "auto_master.log", "source_code_plaintext", "git_history"],
+      "rotation_policy": "recommended"
+    },
+    "input_validation": {
+      "required": true,
+      "sanitize_all_inputs": true,
+      "rate_limiting": "recommended"
+    },
+    "transport_security": {
+      "require_https": true,
+      "enforce_tls_version": "1.2+",
+      "certificate_validation": "required"
+    }
+  }
+}
+

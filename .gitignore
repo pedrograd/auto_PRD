@@ -1,0 +1,29 @@
+# PRD automation runtime files
+.auto_state.json
+.auto_state.json.backup*
+auto_master.log
+auto_master.log.bak.*
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
